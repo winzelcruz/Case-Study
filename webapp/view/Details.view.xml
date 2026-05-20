@@ -1,45 +1,121 @@
-<mvc:View controllerName="sapui5.casestudy.casestudy.controller.Details"
-		xmlns:mvc="sap.ui.core.mvc"
-		xmlns="sap.m"
-		xmlns:f="sap.f"
-		xmlns:layout="sap.ui.layout"
-		height="100%">
+<mvc:View
+    controllerName="sapui5.casestudy.casestudy.controller.Details"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:fd="sap.f"
+    height="100%">
 
-    <f:DynamicPage
-        id="dynamicPageId"
-        headerExpanded="{/headerExpanded}"
-        toggleHeaderOnTitleClick="{/titleClickable}">
+    <fd:DynamicPage id="dynamicPageId" showFooter= "true">
 
-        <!-- DynamicPage Title -->
-        <f:title>
-            <f:DynamicPageTitle>
-                <f:heading>
-                    <Title text="Details" level ="H1"/>
-                </f:heading>
-            </f:DynamicPageTitle>
-        </f:title>
-<!-- 
-        DynamicPage Header 
-        <f:header>
-            <f:DynamicPageHeader>
-                <f:content>
-                    <OverflowToolbar>
-                        <Button text="Edit" type="Transparent"/>
-                        <Button text="Delete" type="Transparent"/>
-                    </OverflowToolbar>
-                </f:content>
-            </f:DynamicPageHeader>
-        </f:header> -->
+        <fd:title>
+            <fd:DynamicPageTitle>
+                <fd:heading>
+                    <Title text="Detail" level="H1" titleStyle="H1"/>
+                </fd:heading>
+            </fd:DynamicPageTitle>
+        </fd:title>
 
-        <!-- DynamicPage Footer -->
-        <f:footer>
+        <fd:content>
+
+            <VBox>
+
+                <f:SimpleForm
+                    id="orderDetailForm"
+                    width="auto"
+                    title="Order Detail"                
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    emptySpanL="4"
+                    emptySpanM="4"
+                    columnsL="1"
+                    columnsM="1"
+                    class="sapUiResponsiveMargin">
+
+                    <f:content>
+                        <Label text="Order Number:"/>
+                        <Text text="012201"/>
+
+                        <Label text="Created On:"/>
+                        <Text text="01 Jan 2025"/>
+
+                        <Label text="Receiving Plant:"/>
+                        <Text text="9101 - Singapore"/>
+
+                        <Label text="Delivering Plant:"/>
+                        <Text text="9102 - Malaysia"/>
+
+                        <Label text="Status:"/>
+                        <Text text="Created"/>
+                    </f:content>
+
+                </f:SimpleForm>
+
+                <!-- Products Table -->
+                <Table
+                    id="idProductsTable"
+                    headerText="Product (3)"
+                    width="auto"
+                    class="sapUiResponsiveMargin sapUiLargePaddingTop"
+>
+
+                    <columns>
+                        <Column width="12em">
+                            <Text text="Product Name"/>
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true">
+                            <Text text="Quantity"/>
+                        </Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
+                            <Text text="Price Per Quantity"/>
+                        </Column>
+                        <Column hAlign="End">
+                            <Text text="Total Price"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="P002 - Sony Bravia TV"/>
+                                <Text text="1"/>
+                                <Text text="30000"/>
+                                <Text text="30000"/>
+                            </cells>
+                        </ColumnListItem>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="P109 - Samsung TV"/>
+                                <Text text="2"/>
+                                <Text text="50000"/>
+                                <Text text="100000"/>
+                            </cells>
+                        </ColumnListItem>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="P385 - Phillips TV"/>
+                                <Text text="1"/>
+                                <Text text="35000"/>
+                                <Text text="35000"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+
+                </Table>
+
+            </VBox>
+
+        </fd:content>
+
+        <fd:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
                 <Button text="Edit"/>
-                <Button  text="Cancel"/>
+                <Button text="Cancel"/>
             </OverflowToolbar>
-        </f:footer>
+        </fd:footer>
 
-    </f:DynamicPage>
+    </fd:DynamicPage>
 
 </mvc:View>
