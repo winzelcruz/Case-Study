@@ -4,7 +4,7 @@
     xmlns:f="sap.f"
     xmlns:fb="sap.ui.comp.filterbar"
     xmlns:core="sap.ui.core">
-    <f:DynamicPage id="dynamicPageId" headerExpanded="true" showFooter="false">
+    <f:DynamicPage id="dynamicPageMainId" headerExpanded="true" showFooter="false">
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <f:content>
