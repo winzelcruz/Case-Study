@@ -91,16 +91,29 @@
       "routes": [
         {
           "name": "RouteMain",
-          "pattern": ":?query:",
+          "pattern": "",
           "target": [
             "TargetMain"
           ]
-        }
+        },
+          {
+            "name": "RouteDetails",
+            "pattern": "Details",
+            "target": [
+              "TargetDetails"
+            ]
+          }
       ],
       "targets": {
         "TargetMain": {
           "id": "Main",
-          "name": "Main"
+          "name": "Main",
+          "level": 1
+        },
+        "TargetDetails": {
+          "id": "Details",
+          "name": "Details",
+          "level": 2
         }
       }
     },

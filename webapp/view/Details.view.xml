@@ -1,0 +1,45 @@
+<mvc:View controllerName="sapui5.casestudy.casestudy.controller.Details"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		height="100%">
+
+    <f:DynamicPage
+        id="dynamicPageId"
+        headerExpanded="{/headerExpanded}"
+        toggleHeaderOnTitleClick="{/titleClickable}">
+
+        <!-- DynamicPage Title -->
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <Title text="Details" level ="H1"/>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
+<!-- 
+        DynamicPage Header 
+        <f:header>
+            <f:DynamicPageHeader>
+                <f:content>
+                    <OverflowToolbar>
+                        <Button text="Edit" type="Transparent"/>
+                        <Button text="Delete" type="Transparent"/>
+                    </OverflowToolbar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header> -->
+
+        <!-- DynamicPage Footer -->
+        <f:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button text="Edit"/>
+                <Button  text="Cancel"/>
+            </OverflowToolbar>
+        </f:footer>
+
+    </f:DynamicPage>
+
+</mvc:View>
