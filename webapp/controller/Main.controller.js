@@ -5,6 +5,10 @@ sap.ui.define([
 
     return Controller.extend("sapui5.casestudy.casestudy.controller.Main", {
         onInit() {
+        },
+        onPressGoToDetails() {
+             var oRouter = this.getOwnerComponent().getRouter();
+          oRouter.navTo("RouteDetails");
         }
     });
 });

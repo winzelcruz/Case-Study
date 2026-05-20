@@ -2,5 +2,8 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}">
+        <content>
+            <Button text="Go to Details" press="onPressGoToDetails"/>
+        </content>
     </Page>
 </mvc:View>
