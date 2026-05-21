@@ -1,0 +1,61 @@
+{
+  "Orders": [
+    {
+      "OrderID": 1001,
+      "CreatedOn": "2026-05-21",
+      "ReceivingPlant": "9101",
+      "DeliveringPlant": "9102",
+      "Status": "Created",
+      "Products": [
+        {
+          "ProductName": "Laptop",
+          "Quantity": 2,
+          "Price": 50000
+        },
+        {
+          "ProductName": "Mouse",
+          "Quantity": 5,
+          "Price": 300
+        }
+      ]
+    },
+    {
+      "OrderID": 1002,
+      "CreatedOn": "2026-05-21",
+      "ReceivingPlant": "9201",
+      "DeliveringPlant": "9202",
+      "Status": "InProgress",
+      "Products": [
+        {
+          "ProductName": "Keyboard",
+          "Quantity": 3,
+          "Price": 1500
+        },
+        {
+          "ProductName": "Monitor",
+          "Quantity": 1,
+          "Price": 8000
+        }
+      ]
+    },
+    {
+      "OrderID": 1003,
+      "CreatedOn": "2026-05-21",
+      "ReceivingPlant": "9301",
+      "DeliveringPlant": "9302",
+      "Status": "Completed",
+      "Products": [
+        {
+          "ProductName": "Printer",
+          "Quantity": 1,
+          "Price": 7000
+        },
+        {
+          "ProductName": "Scanner",
+          "Quantity": 2,
+          "Price": 4500
+        }
+      ]
+    }
+  ]
+}
