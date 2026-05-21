@@ -1,6 +1,84 @@
 <mvc:View controllerName="sapui5.casestudy.casestudy.controller.Main"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-    </Page>
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core">
+    <f:DynamicPage id="dynamicPageId" headerExpanded="true" showFooter="false">
+        <f:header>
+            <f:DynamicPageHeader pinnable="true">
+                <f:content>
+                    <fb:FilterBar id="orderFilterBar" 
+                        search="onSearch" 
+                        useToolbar="false" 
+                        showGoOnFB="false" 
+                        showFilterConfiguration="false">
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem groupName="MainGroup" name="OrderNumber" label="{i18n>lblOrderNumber}" visibleInFilterBar="true">
+                                <fb:control>
+                                    <Input id="filterOrderNumber" placeholder="{i18n>phOrderNumber}"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="MainGroup" name="CreationDate" label="{i18n>lblCreationDate}" visibleInFilterBar="true">
+                                <fb:control>
+                                    <DateRangeSelection id="filterCreationDate" displayFormat="dd MMM yyyy"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="MainGroup" name="Status" label="{i18n>lblStatus}" visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="filterStatus">
+                                        <core:Item key="Created" text="{i18n>statusCreated}"/>
+                                        <core:Item key="Released" text="{i18n>statusReleased}"/>
+                                        <core:Item key="Partially Completed" text="{i18n>statusPartiallyCompleted}"/>
+                                        <core:Item key="Delivered" text="{i18n>statusDelivered}"/>
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem groupName="MainGroup" name="Actions" label="" visibleInFilterBar="true">
+                                <fb:control>
+                                    <HBox>
+                                        <Button text="{i18n>btnGo}" type="Emphasized" press="onSearch" width="60px"/>
+                                        <Button text="{i18n>btnClear}" press="onClear" />
+                                    </HBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
+            </f:DynamicPageHeader>
+        </f:header>
+        <f:content>
+            <Table id="ordersTable" 
+                   mode="MultiSelect" 
+                   items="{path: 'localOrders>/'}">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title id="tableTitle" text="Orders (0)"/>
+                        <ToolbarSpacer/> 
+                        <Button icon="sap-icon://add" press="onCreateOrder" tooltip="{i18n>tlpCreate}" />
+                        <Button icon="sap-icon://delete" press="onDeleteOrder" tooltip="{i18n>tlpDelete}" />
+                        <ToolbarSpacer width="20px" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="{i18n>colOrderNumber}"/></Column>
+                    <Column><Text text="{i18n>colCreationDate}"/></Column>
+                    <Column><Text text="{i18n>colReceivingPlant}"/></Column>
+                    <Column><Text text="{i18n>colDeliveringPlant}"/></Column>
+                    <Column><Text text="{i18n>colStatus}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells>
+                            <Text text="{localOrders>OrderNumber}"/>
+                            <Text text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"/>
+                            <Text text="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"/>
+                            <Text text="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"/>
+                            <ObjectStatus text="{localOrders>Status}" state="{path: 'localOrders>Status', formatter: '.formatter.statusState'}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>
