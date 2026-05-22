@@ -101,6 +101,13 @@
             "target": [
               "TargetDetails"
             ]
+          },
+          {
+            "name": "RouteEdit",
+            "pattern": "Edit/{OrderNumber}",
+            "target": [
+              "TargetEdit"
+            ]
           }
       ],
       "targets": {
@@ -113,6 +120,11 @@
           "id": "Details",
           "name": "Details",
           "level": 2
+        },
+                "TargetEdit": {
+          "id": "Edit",
+          "name": "Edit",
+          "level": 3
         }
       }
     },
