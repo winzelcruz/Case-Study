@@ -7,12 +7,12 @@
     xmlns:fd="sap.f"
     height="100%">
 
-    <fd:DynamicPage id="dynamicPageId" showFooter= "true">
+    <fd:DynamicPage id="dynamicPageDetailsId" showFooter= "true">
 
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
-                    <Title text="Detail" level="H1" titleStyle="H1"/>
+                    <Title text="{i18n>titleDetails}" level="H1" titleStyle="H1"/>
                 </fd:heading>
             </fd:DynamicPageTitle>
         </fd:title>
@@ -24,7 +24,7 @@
                 <f:SimpleForm
                     id="orderDetailForm"
                     width="auto"
-                    title="Order Detail"                
+                    title="{i18n>formtitleDetails}"                
                     labelSpanL="4"
                     labelSpanM="4"
                     emptySpanL="4"
@@ -33,22 +33,22 @@
                     columnsM="1"
                     class="sapUiResponsiveMargin">
 
-                    <f:content>
-                        <Label text="Order Number:"/>
-                        <Text text="012201"/>
+                <f:content>
+                    <Label text="{i18n>lblOrderNumber}"/>
+                    <Text text="{localOrders>OrderNumber}"/>
 
-                        <Label text="Created On:"/>
-                        <Text text="01 Jan 2025"/>
+                    <Label text="{i18n>lblCreationDate}"/>
+                    <Text text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"/>
 
-                        <Label text="Receiving Plant:"/>
-                        <Text text="9101 - Singapore"/>
+                    <Label text="{i18n>lblReceivingPlant}"/>
+                    <Text text="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"/>
 
-                        <Label text="Delivering Plant:"/>
-                        <Text text="9102 - Malaysia"/>
+                    <Label text="{i18n>lblDeliveringPlant}"/>
+                    <Text text="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"/>
 
-                        <Label text="Status:"/>
-                        <Text text="Created"/>
-                    </f:content>
+                    <Label text="{i18n>lblStatus}"/>
+                    <Text text="{localOrders>Status}"/>
+                </f:content>
 
                 </f:SimpleForm>
 
@@ -62,42 +62,42 @@
 
                     <columns>
                         <Column width="12em">
-                            <Text text="Product Name"/>
+                            <Text text="{i18n>colProductName}"/>
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true">
-                            <Text text="Quantity"/>
+                            <Text text="{i18n>colQuantity}"/>
                         </Column>
                         <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
-                            <Text text="Price Per Quantity"/>
+                            <Text text="{i18n>colPriceperQuantity}"/>
                         </Column>
                         <Column hAlign="End">
-                            <Text text="Total Price"/>
+                            <Text text="{i18n>colTotalPrice}"/>
                         </Column>
                     </columns>
 
                     <items>
                         <ColumnListItem>
                             <cells>
-                                <Text text="P002 - Sony Bravia TV"/>
-                                <Text text="1"/>
-                                <Text text="30000"/>
-                                <Text text="30000"/>
+                                <Text text="{localOrders>ProductName}"/>
+                                <Text text="{localOrders>Quantity}"/>
+                                <Text text="{localOrders>PricePerQuantity}"/>
+                                <Text text="{localOrders>TotalPrice}"/>
                             </cells>
                         </ColumnListItem>
                         <ColumnListItem>
                             <cells>
-                                <Text text="P109 - Samsung TV"/>
-                                <Text text="2"/>
-                                <Text text="50000"/>
-                                <Text text="100000"/>
+                                <Text text="{localOrders>ProductName}"/>
+                                <Text text="{localOrders>Quantity}"/>
+                                <Text text="{localOrders>PricePerQuantity}"/>
+                                <Text text="{localOrders>TotalPrice}"/>
                             </cells>
                         </ColumnListItem>
                         <ColumnListItem>
                             <cells>
-                                <Text text="P385 - Phillips TV"/>
-                                <Text text="1"/>
-                                <Text text="35000"/>
-                                <Text text="35000"/>
+                                <Text text="{localOrders>Products>ProductName}"/>
+                                <Text text="{localOrders>Quantity}"/>
+                                <Text text="{localOrders>PricePerQuantity}"/>
+                                <Text text="{localOrders>TotalPrice}"/>
                             </cells>
                         </ColumnListItem>
                     </items>
@@ -111,8 +111,8 @@
         <fd:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button text="Edit"/>
-                <Button text="Cancel"/>
+                <Button text="{i18n>tlpEdit}"/>
+                <Button text="{i18n>tlpCancel}" press="onCancel"/>
             </OverflowToolbar>
         </fd:footer>
 

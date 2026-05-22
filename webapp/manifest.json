@@ -85,8 +85,7 @@
         "type": "View",
         "viewType": "XML",
         "path": "sapui5.casestudy.casestudy.view",
-        "async": true,
-        "viewPath": "sapui5.casestudy.casestudy.view"
+        "async": true
       },
       "routes": [
         {
@@ -98,7 +97,7 @@
         },
           {
             "name": "RouteDetails",
-            "pattern": "Details",
+            "pattern": "Details/{OrderNumber}",
             "target": [
               "TargetDetails"
             ]
