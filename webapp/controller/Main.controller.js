@@ -67,25 +67,24 @@ sap.ui.define([
                         };
                     });
 
-                    aFormattedOrders.sort(function (param1, param2) {
-                        return parseInt(param1.OrderNumber) - parseInt(param2.OrderNumber);
+                    aFormattedOrders.sort(function (a, b) {
+                        return parseInt(a.OrderNumber) - parseInt(b.OrderNumber);
                     });
 
                     var oLocalModel = new JSONModel(aFormattedOrders);
-
-                    oView.setModel(oLocalModel, "localOrders");
-                    oTitle.setText(oView.getModel("i18n").getResourceBundle().getText("titleOrdersCount", [aFormattedOrders.length]));
-                },
+                    this.getOwnerComponent().setModel(oLocalModel, "localOrders"); 
+                    oTitle.setText("Orders (" + aFormattedOrders.length + ")");
+                }.bind(this),
                 error: function (oError) {
-                    MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNorthwindConnectionFailed"));
+                    MessageBox.error("Northwind Connection Failed.");
                 }
             });
         },
         onSearch: function () {
             var aFilters = [];
-            var sOrderNum = this.byId("filterOrderNumberId").getValue();
-            var oDateRange = this.byId("filterCreationDateId");
-            var aSelectedStatus = this.byId("filterStatusId").getSelectedKeys();
+            var sOrderNum = this.byId("filterOrderNumber").getValue();
+            var oDateRange = this.byId("filterCreationDate");
+            var aSelectedStatus = this.byId("filterStatus").getSelectedKeys();
 
             if (sOrderNum) {
                 aFilters.push(new Filter("OrderNumber", FilterOperator.Contains, sOrderNum));
@@ -252,10 +251,20 @@ sap.ui.define([
             });
         },
         _updateTableCount: function () {
-            var oTable = this.byId("ordersTableId");
+            var oTable = this.byId("ordersTable");
             var iLength = oTable.getBinding("items").getLength();
-            
-            this.byId("tableTitleId").setText("Orders (" + iLength + ")");
-        }
+            this.byId("tableTitle").setText("Orders (" + iLength + ")");
+        },
+onClickOrder: function(oEvent) {
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext("localOrders");
+    const oOrder = oContext.getObject();
+
+    MessageToast.show(oOrder.OrderNumber + " clicked!");
+
+    this.getOwnerComponent().getRouter().navTo("RouteDetails", {
+        OrderNumber: oOrder.OrderNumber
+    });
+}
     });
 });

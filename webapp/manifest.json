@@ -98,7 +98,7 @@
         },
           {
             "name": "RouteDetails",
-            "pattern": "Details",
+            "pattern": "Details/{OrderNumber}",
             "target": [
               "TargetDetails"
             ]
