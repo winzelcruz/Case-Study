@@ -8,7 +8,7 @@
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <f:content>
-                    <fb:FilterBar id="orderFilterBar" 
+                    <fb:FilterBar
                         search="onSearch" 
                         useToolbar="false" 
                         showGoOnFB="false" 
@@ -16,17 +16,17 @@
                         <fb:filterGroupItems>
                             <fb:FilterGroupItem groupName="MainGroup" name="OrderNumber" label="{i18n>lblOrderNumber}" visibleInFilterBar="true">
                                 <fb:control>
-                                    <Input id="filterOrderNumber" placeholder="{i18n>phOrderNumber}"/>
+                                    <Input id="filterOrderNumberId" placeholder="{i18n>phOrderNumber}"/>
                                 </fb:control>
                             </fb:FilterGroupItem>
                             <fb:FilterGroupItem groupName="MainGroup" name="CreationDate" label="{i18n>lblCreationDate}" visibleInFilterBar="true">
                                 <fb:control>
-                                    <DateRangeSelection id="filterCreationDate" displayFormat="dd MMM yyyy"/>
+                                    <DateRangeSelection id="filterCreationDateId" displayFormat="dd MMM yyyy"/>
                                 </fb:control>
                             </fb:FilterGroupItem>
                             <fb:FilterGroupItem groupName="MainGroup" name="Status" label="{i18n>lblStatus}" visibleInFilterBar="true">
                                 <fb:control>
-                                    <MultiComboBox id="filterStatus">
+                                    <MultiComboBox id="filterStatusId">
                                         <core:Item key="Created" text="{i18n>statusCreated}"/>
                                         <core:Item key="Released" text="{i18n>statusReleased}"/>
                                         <core:Item key="Partially Completed" text="{i18n>statusPartiallyCompleted}"/>
@@ -48,12 +48,12 @@
             </f:DynamicPageHeader>
         </f:header>
         <f:content>
-            <Table id="ordersTable" 
+            <Table id="ordersTableId" 
                    mode="MultiSelect" 
                    items="{path: 'localOrders>/'}">
                 <headerToolbar>
                     <OverflowToolbar>
-                        <Title id="tableTitle" text="Orders (0)"/>
+                        <Title id="tableTitleId" text="Orders (0)"/>
                         <ToolbarSpacer/> 
                         <Button icon="sap-icon://add" press="onCreateOrder" tooltip="{i18n>tlpCreate}" />
                         <Button icon="sap-icon://delete" press="onDeleteOrder" tooltip="{i18n>tlpDelete}" />

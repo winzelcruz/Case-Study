@@ -1,30 +1,37 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel",
-    "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator",
+    "sap/m/Button",
+    "sap/m/ComboBox",
+    "sap/m/DatePicker",
+    "sap/m/Dialog",
+    "sap/m/Input",
+    "sap/m/Label",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-    "sap/m/Dialog",
-    "sap/m/Button",
+    "sap/ui/core/Item",
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/ValueState",
     "sap/ui/layout/form/SimpleForm",
-    "sap/m/Label",
-    "sap/m/Input",
-    "sap/m/DatePicker",
-    "sap/m/ComboBox",
-    "sap/ui/core/Item"
-], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, Dialog, Button, SimpleForm, Label, Input, DatePicker, ComboBox, Item) {
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
+    "sap/ui/model/json/JSONModel",
+    "sapui5/casestudy/casestudy/model/Constants"
+], function (Button, ComboBox, DatePicker, Dialog, Input, Label, MessageBox, MessageToast, Item, Controller, ValueState, SimpleForm, Filter, FilterOperator, JSONModel, Constants) {
     "use strict";
 
     return Controller.extend("sapui5.casestudy.casestudy.controller.Main", {
         formatter: {
             statusState: function (sStatus) {
                 switch (sStatus) {
-                    case "Created": return "None";
-                    case "Released": return "Warning";
-                    case "Partially Completed": return "Information";
-                    case "Delivered": return "Success";
-                    default: return "None";
+                    case Constants.STATUS.CREATED:
+                        return ValueState.None;
+                    case Constants.STATUS.RELEASED:
+                        return ValueState.Warning;
+                    case Constants.STATUS.PARTIAL:
+                        return ValueState.Information;
+                    case Constants.STATUS.DELIVERED:
+                        return ValueState.Success;
+                    default:
+                        return ValueState.None;
                 }
             }
         },
@@ -34,7 +41,7 @@ sap.ui.define([
         },
         _fetchNorthwindOrders: function (oModel) {
             var oView = this.getView();
-            var oTitle = this.byId("tableTitle");
+            var oTitle = this.byId("tableTitleId");
 
             oModel.read("/Orders", {
                 urlParameters: {
@@ -42,7 +49,12 @@ sap.ui.define([
                     "$top": 20
                 },
                 success: function (oData) {
-                    var aMockStatuses = ["Created", "Released", "Partially Completed", "Delivered"];
+                    var aMockStatuses = [
+                        Constants.STATUS.CREATED,
+                        Constants.STATUS.RELEASED,
+                        Constants.STATUS.PARTIAL,
+                        Constants.STATUS.DELIVERED
+                    ];
                     var aFormattedOrders = oData.results.map(function (oOrder, idx) {
                         return {
                             OrderNumber: String(oOrder.OrderID),
@@ -55,24 +67,25 @@ sap.ui.define([
                         };
                     });
 
-                    aFormattedOrders.sort(function (a, b) {
-                        return parseInt(a.OrderNumber) - parseInt(b.OrderNumber);
+                    aFormattedOrders.sort(function (param1, param2) {
+                        return parseInt(param1.OrderNumber) - parseInt(param2.OrderNumber);
                     });
 
                     var oLocalModel = new JSONModel(aFormattedOrders);
+
                     oView.setModel(oLocalModel, "localOrders");
-                    oTitle.setText("Orders (" + aFormattedOrders.length + ")");
+                    oTitle.setText(oView.getModel("i18n").getResourceBundle().getText("titleOrdersCount", [aFormattedOrders.length]));
                 },
                 error: function (oError) {
-                    MessageBox.error("Northwind Connection Failed.");
+                    MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNorthwindConnectionFailed"));
                 }
             });
         },
         onSearch: function () {
             var aFilters = [];
-            var sOrderNum = this.byId("filterOrderNumber").getValue();
-            var oDateRange = this.byId("filterCreationDate");
-            var aSelectedStatus = this.byId("filterStatus").getSelectedKeys();
+            var sOrderNum = this.byId("filterOrderNumberId").getValue();
+            var oDateRange = this.byId("filterCreationDateId");
+            var aSelectedStatus = this.byId("filterStatusId").getSelectedKeys();
 
             if (sOrderNum) {
                 aFilters.push(new Filter("OrderNumber", FilterOperator.Contains, sOrderNum));
@@ -89,77 +102,96 @@ sap.ui.define([
                 aFilters.push(new Filter({ filters: aStatusFilters, and: false }));
             }
 
-            this.byId("ordersTable").getBinding("items").filter(aFilters);
+            this.byId("ordersTableId").getBinding("items").filter(aFilters);
             this._updateTableCount();
         },
         onClear: function () {
-            this.byId("filterOrderNumber").setValue("");
-            this.byId("filterCreationDate").setValue("");
-            this.byId("filterStatus").setSelectedKeys([]);
-            this.byId("ordersTable").getBinding("items").filter([]);
+            this.byId("filterOrderNumberId").setValue("");
+            this.byId("filterCreationDateId").setValue("");
+            this.byId("filterStatusId").setSelectedKeys([]);
+            this.byId("ordersTableId").getBinding("items").filter([]);
             this._updateTableCount();
         },
         onCreateOrder: function () {
+            var oView = this.getView();
+
             if (!this._pCreateDialog) {
                 this._pCreateDialog = new Dialog({
-                    title: "Create Product Order",
+                    title: "{i18n>titleCreateOrder}", 
                     contentWidth: "400px",
                     content: new SimpleForm({
                         editable: true,
                         content: [
-                            new Label({ text: "Order Number", required: true }),
-                            new Input({ id: "newOrderNumber", placeholder: "e.g. 012205" }),
+                            new Label({ text: "{i18n>lblOrderNumber}", required: true }),
+                            new Input({
+                                id: oView.createId("newOrderNumberId"),
+                                placeholder: "{i18n>phOrderNumber}"
+                            }),
 
-                            new Label({ text: "Creation Date", required: true }),
-                            new DatePicker({ id: "newCreationDate", valueFormat: "yyyy-MM-dd", displayFormat: "dd MMM yyyy" }),
+                            new Label({ text: "{i18n>lblCreationDate}", required: true }),
+                            new DatePicker({
+                                id: oView.createId("newCreationDateId"), 
+                                valueFormat: "yyyy-MM-dd",
+                                displayFormat: "dd MMM yyyy"
+                            }),
 
-                            new Label({ text: "Receiving Plant Code", required: true }),
-                            new Input({ id: "newRecPlant", value: "9101" }),
+                            new Label({ text: "{i18n>colReceivingPlant}", required: true }),
+                            new Input({
+                                id: oView.createId("newRecPlantId"), 
+                                value: "9101"
+                            }),
 
-                            new Label({ text: "Delivering Plant Code", required: true }),
-                            new Input({ id: "newDelPlant", value: "9102" }),
+                            new Label({ text: "{i18n>colDeliveringPlant}", required: true }),
+                            new Input({
+                                id: oView.createId("newDelPlantId"), 
+                                value: "9102"
+                            }),
 
-                            new Label({ text: "Status", required: true }),
+                            new Label({ text: "{i18n>colStatus}", required: true }),
                             new ComboBox({
-                                id: "newStatus", selectedKey: "Created", items: [
-                                    new Item({ key: "Created", text: "Created" }),
-                                    new Item({ key: "Released", text: "Released" }),
-                                    new Item({ key: "Partially Completed", text: "Partially Completed" }),
-                                    new Item({ key: "Delivered", text: "Delivered" })
+                                id: oView.createId("newStatusId"), 
+                                selectedKey: "Created",
+                                items: [
+                                    new Item({ key: "Created", text: "{i18n>statusCreated}" }),
+                                    new Item({ key: "Released", text: "{i18n>statusReleased}" }),
+                                    new Item({ key: "Partially Completed", text: "{i18n>statusPartiallyCompleted}" }),
+                                    new Item({ key: "Delivered", text: "{i18n>statusDelivered}" })
                                 ]
                             })
                         ]
                     }),
                     beginButton: new Button({
-                        text: "Save",
+                        text: "{i18n>btnSave}",
                         type: "Emphasized",
                         press: this._onSaveNewOrder.bind(this)
                     }),
                     endButton: new Button({
-                        text: "Cancel",
+                        text: "{i18n>btnCancel}",
                         press: function () {
                             this._pCreateDialog.close();
                         }.bind(this)
                     })
                 });
-                this.getView().addDependent(this._pCreateDialog);
+                oView.addDependent(this._pCreateDialog);
             }
             this._pCreateDialog.open();
         },
         _onSaveNewOrder: function () {
-            var sNum = sap.ui.getCore().byId("newOrderNumber").getValue();
-            var sDate = sap.ui.getCore().byId("newCreationDate").getDateValue();
-            var sRec = sap.ui.getCore().byId("newRecPlant").getValue();
-            var sDel = sap.ui.getCore().byId("newDelPlant").getValue();
-            var sStatus = sap.ui.getCore().byId("newStatus").getSelectedKey();
+            var oNumControl = this.byId("newOrderNumberId");
+            var oDateControl = this.byId("newCreationDateId");
+            var oView = this.getView();
+            var oModel = oView.getModel("localOrders");
+            var aData = oModel.getData();
+            var sNum = oNumControl.getValue();
+            var sDate = oDateControl.getDateValue();
+            var sRec = this.byId("newRecPlantId").getValue();
+            var sDel = this.byId("newDelPlantId").getValue();
+            var sStatus = this.byId("newStatusId").getSelectedKey();
 
             if (!sNum || !sDate) {
-                MessageBox.error("Please fill in all mandatory fields.");
+                MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgMandatoryFields"));
                 return;
             }
-
-            var oModel = this.getView().getModel("localOrders");
-            var aData = oModel.getData();
 
             aData.unshift({
                 OrderNumber: sNum,
@@ -174,46 +206,56 @@ sap.ui.define([
             oModel.refresh(true);
             this._updateTableCount();
             this._pCreateDialog.close();
-            MessageToast.show("Order " + sNum + " created successfully.");
-            sap.ui.getCore().byId("newOrderNumber").setValue("");
-            sap.ui.getCore().byId("newCreationDate").setValue("");
+            // Success Message
+            MessageToast.show(oView.getModel("i18n").getResourceBundle().getText("msgOrderCreatedSuccess", [sNum]));
+            oNumControl.setValue("");
+            oDateControl.setValue("");
+            this.byId("newStatusId").setSelectedKey("Created");
         },
         onDeleteOrder: function () {
-            var oTable = this.byId("ordersTable");
+            var oTable = this.byId("ordersTableId");
+            var oView = this.getView();
             var aSelectedItems = oTable.getSelectedItems();
             var iCount = aSelectedItems.length;
 
             if (iCount === 0) {
-                MessageBox.error("Please select an item from the table.");
+                MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNoSelection"));
                 return;
             }
 
-            var sMsg = "Are you sure you want to delete <" + iCount + "> items?";
+            var sMsg = oView.getModel("i18n").getResourceBundle().getText("msgDeleteConfirm", [iCount]);
+
             MessageBox.confirm(sMsg, {
                 actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.YES) {
-                        var oModel = this.getView().getModel("localOrders");
+                        var oModel = oView.getModel("localOrders");
                         var aData = oModel.getData();
 
-                        aSelectedItems.forEach(function (oItem) {
-                            var sPath = oItem.getBindingContextPath();
-                            var iIdx = parseInt(sPath.split("/")[2]); // Fix index splitting depth for model paths
-                            aData.splice(iIdx, 1);
+                        // 1. Get the actual objects to delete instead of just indexes
+                        var aItemsToDelete = aSelectedItems.map(function (oItem) {
+                            return oItem.getBindingContext("localOrders").getObject();
                         });
 
-                        oModel.refresh(true);
+                        // 2. Filter the data array to remove those objects
+                        var aNewData = aData.filter(function (oDataObj) {
+                            return !aItemsToDelete.includes(oDataObj);
+                        });
+
+                        // 3. Update model and UI
+                        oModel.setData(aNewData);
                         oTable.removeSelections(true);
                         this._updateTableCount();
-                        MessageToast.show("Selected items dropped successfully.");
+                        MessageBox.success(oView.getModel("i18n").getResourceBundle().getText("msgDeleteSuccess"));
                     }
                 }.bind(this)
             });
         },
         _updateTableCount: function () {
-            var oTable = this.byId("ordersTable");
+            var oTable = this.byId("ordersTableId");
             var iLength = oTable.getBinding("items").getLength();
-            this.byId("tableTitle").setText("Orders (" + iLength + ")");
+            
+            this.byId("tableTitleId").setText("Orders (" + iLength + ")");
         }
     });
 });
