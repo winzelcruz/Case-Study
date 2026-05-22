@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "sapui5.casestudy.casestudy.view.",
+		viewNamespace: "sapui5.group3.casestudy.view.",
 		autoWait: true
 	});
 });
