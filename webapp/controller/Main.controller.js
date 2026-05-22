@@ -14,11 +14,11 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/model/json/JSONModel",
-    "sapui5/casestudy/casestudy/model/Constants"
+    "sapui5/group3/casestudy/model/Constants"
 ], function (Button, ComboBox, DatePicker, Dialog, Input, Label, MessageBox, MessageToast, Item, Controller, ValueState, SimpleForm, Filter, FilterOperator, JSONModel, Constants) {
     "use strict";
 
-    return Controller.extend("sapui5.casestudy.casestudy.controller.Main", {
+    return Controller.extend("sapui5.group3.casestudy.controller.Main", {
         formatter: {
             statusState: function (sStatus) {
                 switch (sStatus) {

@@ -14,7 +14,7 @@ sap.ui.define([
 			// start the app UI component
 			this.iStartMyUIComponent({
 				componentConfig: {
-					name: "sapui5.casestudy.casestudy",
+					name: "sapui5.group3.casestudy",
 					async: true
 				},
 				hash: oOptions.hash,

@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: sapui5.casestudy.casestudy
+  name: sapui5.group3.casestudy
 type: application
 server:
   customMiddleware:

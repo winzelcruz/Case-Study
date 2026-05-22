@@ -1,7 +1,7 @@
 {
   "_version": "1.84.0",
   "sap.app": {
-    "id": "sapui5.casestudy.casestudy",
+    "id": "sapui5.group3.casestudy",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -60,7 +60,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "sapui5.casestudy.casestudy.i18n.i18n"
+          "bundleName": "sapui5.group3.casestudy.i18n.i18n"
         }
       },
       "": {
@@ -84,9 +84,9 @@
         "transition": "slide",
         "type": "View",
         "viewType": "XML",
-        "path": "sapui5.casestudy.casestudy.view",
+        "path": "sapui5.group3.casestudy.view",
         "async": true,
-        "viewPath": "sapui5.casestudy.casestudy.view"
+        "viewPath": "sapui5.group3.casestudy.view"
       },
       "routes": [
         {
@@ -105,7 +105,7 @@
       }
     },
     "rootView": {
-      "viewName": "sapui5.casestudy.casestudy.view.App",
+      "viewName": "sapui5.group3.casestudy.view.App",
       "type": "XML",
       "id": "App",
       "async": true

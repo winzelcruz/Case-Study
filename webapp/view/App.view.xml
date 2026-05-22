@@ -1,4 +1,4 @@
-<mvc:View controllerName="sapui5.casestudy.casestudy.controller.App"
+<mvc:View controllerName="sapui5.group3.casestudy.controller.App"
     displayBlock="true"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
