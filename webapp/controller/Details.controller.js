@@ -3,7 +3,7 @@ sap.ui.define([
 ], (Controller) => {
     "use strict";
 
-    return Controller.extend("sapui5.casestudy.casestudy.controller.Details", {
+    return Controller.extend("sapui5.group3.casestudy.controller.Details", {
 
         onInit: function () {
             const oRouter = this.getOwnerComponent().getRouter();
