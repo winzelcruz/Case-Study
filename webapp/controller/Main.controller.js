@@ -67,8 +67,8 @@ sap.ui.define([
                         };
                     });
 
-                    aFormattedOrders.sort(function (param1, param2) {
-                        return parseInt(param1.OrderNumber) - parseInt(param2.OrderNumber);
+                    aFormattedOrders.sort(function (a, b) {
+                        return parseInt(a.OrderNumber) - parseInt(b.OrderNumber);
                     });
 
                     const oLocalModel = new JSONModel(aFormattedOrders);
@@ -77,7 +77,7 @@ sap.ui.define([
                     oTitle.setText(oView.getModel("i18n").getResourceBundle().getText("titleOrdersCount", [aFormattedOrders.length]));
                 },
                 error: function (oError) {
-                    MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNorthwindConnectionFailed"));
+                    MessageBox.error("Northwind Connection Failed.");
                 }
             });
         },
@@ -252,10 +252,20 @@ sap.ui.define([
             });
         },
         _updateTableCount: function () {
-            const oTable = this.byId("ordersTableId");
+            const oTable = this.byId("ordersTable");
             const iLength = oTable.getBinding("items").getLength();
-            
-            this.byId("tableTitleId").setText("Orders (" + iLength + ")");
-        }
+            this.byId("tableTitle").setText("Orders (" + iLength + ")");
+        },
+onClickOrder: function(oEvent) {
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext("localOrders");
+    const oOrder = oContext.getObject();
+
+    MessageToast.show(oOrder.OrderNumber + " clicked!");
+
+    this.getOwnerComponent().getRouter().navTo("RouteDetails", {
+        OrderNumber: oOrder.OrderNumber
+    });
+}
     });
 });
