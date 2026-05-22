@@ -36,12 +36,12 @@ sap.ui.define([
             }
         },
         onInit: function () {
-            var oODataModel = this.getOwnerComponent().getModel();
+            const oODataModel = this.getOwnerComponent().getModel();
             this._fetchNorthwindOrders(oODataModel);
         },
         _fetchNorthwindOrders: function (oModel) {
-            var oView = this.getView();
-            var oTitle = this.byId("tableTitleId");
+            const oView = this.getView();
+            const oTitle = this.byId("tableTitleId");
 
             oModel.read("/Orders", {
                 urlParameters: {
@@ -49,13 +49,13 @@ sap.ui.define([
                     "$top": 20
                 },
                 success: function (oData) {
-                    var aMockStatuses = [
+                    const aMockStatuses = [
                         Constants.STATUS.CREATED,
                         Constants.STATUS.RELEASED,
                         Constants.STATUS.PARTIAL,
                         Constants.STATUS.DELIVERED
                     ];
-                    var aFormattedOrders = oData.results.map(function (oOrder, idx) {
+                    const aFormattedOrders = oData.results.map(function (oOrder, idx) {
                         return {
                             OrderNumber: String(oOrder.OrderID),
                             CreationDate: oOrder.OrderDate,
@@ -71,7 +71,7 @@ sap.ui.define([
                         return parseInt(param1.OrderNumber) - parseInt(param2.OrderNumber);
                     });
 
-                    var oLocalModel = new JSONModel(aFormattedOrders);
+                    const oLocalModel = new JSONModel(aFormattedOrders);
 
                     oView.setModel(oLocalModel, "localOrders");
                     oTitle.setText(oView.getModel("i18n").getResourceBundle().getText("titleOrdersCount", [aFormattedOrders.length]));
@@ -82,10 +82,10 @@ sap.ui.define([
             });
         },
         onSearch: function () {
-            var aFilters = [];
-            var sOrderNum = this.byId("filterOrderNumberId").getValue();
-            var oDateRange = this.byId("filterCreationDateId");
-            var aSelectedStatus = this.byId("filterStatusId").getSelectedKeys();
+            const aFilters = [];
+            const sOrderNum = this.byId("filterOrderNumberId").getValue();
+            const oDateRange = this.byId("filterCreationDateId");
+            const aSelectedStatus = this.byId("filterStatusId").getSelectedKeys();
 
             if (sOrderNum) {
                 aFilters.push(new Filter("OrderNumber", FilterOperator.Contains, sOrderNum));
@@ -96,7 +96,7 @@ sap.ui.define([
             }
 
             if (aSelectedStatus.length > 0) {
-                var aStatusFilters = aSelectedStatus.map(function (sKey) {
+                const aStatusFilters = aSelectedStatus.map(function (sKey) {
                     return new Filter("Status", FilterOperator.EQ, sKey);
                 });
                 aFilters.push(new Filter({ filters: aStatusFilters, and: false }));
@@ -113,7 +113,7 @@ sap.ui.define([
             this._updateTableCount();
         },
         onCreateOrder: function () {
-            var oView = this.getView();
+            const oView = this.getView();
 
             if (!this._pCreateDialog) {
                 this._pCreateDialog = new Dialog({
@@ -177,16 +177,16 @@ sap.ui.define([
             this._pCreateDialog.open();
         },
         _onSaveNewOrder: function () {
-            var oNumControl = this.byId("newOrderNumberId");
-            var oDateControl = this.byId("newCreationDateId");
-            var oView = this.getView();
-            var oModel = oView.getModel("localOrders");
-            var aData = oModel.getData();
-            var sNum = oNumControl.getValue();
-            var sDate = oDateControl.getDateValue();
-            var sRec = this.byId("newRecPlantId").getValue();
-            var sDel = this.byId("newDelPlantId").getValue();
-            var sStatus = this.byId("newStatusId").getSelectedKey();
+            const oNumControl = this.byId("newOrderNumberId");
+            const oDateControl = this.byId("newCreationDateId");
+            const oView = this.getView();
+            const oModel = oView.getModel("localOrders");
+            const aData = oModel.getData();
+            const sNum = oNumControl.getValue();
+            const sDate = oDateControl.getDateValue();
+            const sRec = this.byId("newRecPlantId").getValue();
+            const sDel = this.byId("newDelPlantId").getValue();
+            const sStatus = this.byId("newStatusId").getSelectedKey();
 
             if (!sNum || !sDate) {
                 MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgMandatoryFields"));
@@ -213,32 +213,32 @@ sap.ui.define([
             this.byId("newStatusId").setSelectedKey("Created");
         },
         onDeleteOrder: function () {
-            var oTable = this.byId("ordersTableId");
-            var oView = this.getView();
-            var aSelectedItems = oTable.getSelectedItems();
-            var iCount = aSelectedItems.length;
+            const oTable = this.byId("ordersTableId");
+            const oView = this.getView();
+            const aSelectedItems = oTable.getSelectedItems();
+            const iCount = aSelectedItems.length;
 
             if (iCount === 0) {
                 MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNoSelection"));
                 return;
             }
 
-            var sMsg = oView.getModel("i18n").getResourceBundle().getText("msgDeleteConfirm", [iCount]);
+            const sMsg = oView.getModel("i18n").getResourceBundle().getText("msgDeleteConfirm", [iCount]);
 
             MessageBox.confirm(sMsg, {
                 actions: [MessageBox.Action.YES, MessageBox.Action.NO],
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.YES) {
-                        var oModel = oView.getModel("localOrders");
-                        var aData = oModel.getData();
+                        const oModel = oView.getModel("localOrders");
+                        const aData = oModel.getData();
 
                         // 1. Get the actual objects to delete instead of just indexes
-                        var aItemsToDelete = aSelectedItems.map(function (oItem) {
+                        const aItemsToDelete = aSelectedItems.map(function (oItem) {
                             return oItem.getBindingContext("localOrders").getObject();
                         });
 
                         // 2. Filter the data array to remove those objects
-                        var aNewData = aData.filter(function (oDataObj) {
+                        const aNewData = aData.filter(function (oDataObj) {
                             return !aItemsToDelete.includes(oDataObj);
                         });
 
@@ -252,9 +252,9 @@ sap.ui.define([
             });
         },
         _updateTableCount: function () {
-            var oTable = this.byId("ordersTableId");
-            var iLength = oTable.getBinding("items").getLength();
-            
+            const oTable = this.byId("ordersTableId");
+            const iLength = oTable.getBinding("items").getLength();
+
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
         }
     });
