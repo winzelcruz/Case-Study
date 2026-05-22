@@ -31,6 +31,15 @@ _onRouteMatched: function (oEvent) {
         onCancel: function () {
             const oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("RouteMain");
+        },
+        onEdit: function () {
+            var oOrderNumber = this.getView().byID("orderNumber")
+            var oOrderNumValue = oOrderNumber.getTValue();
+            oRouter.navTo("RouteEdit");
+
+               this.getOwnerComponent().getRouter().navTo("RouteEdit", {
+        OrderNumber: oOrderNumValue
+    });
         }
 
     });

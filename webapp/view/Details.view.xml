@@ -111,7 +111,7 @@
         <fd:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button text="{i18n>tlpEdit}"/>
+                <Button text="{i18n>tlpEdit}" press="onEdit"/>
                 <Button text="{i18n>tlpCancel}" press="onCancel"/>
             </OverflowToolbar>
         </fd:footer>
