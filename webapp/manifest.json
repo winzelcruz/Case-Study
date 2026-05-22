@@ -65,8 +65,10 @@
       },
       "": {
         "dataSource": "mainService",
-        "preload": true,
-        "settings": {}
+          "settings": {
+          "useBatch": true,
+          "defaultBindingMode": "TwoWay"
+        }
       }
     },
     "resources": {
@@ -110,6 +112,7 @@
             "TargetEdit"
           ]
         }
+
       ],
       "targets": {
         "TargetMain": {
