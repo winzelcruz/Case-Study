@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="sapui5.casestudy.casestudy.controller.Details"
+    controllerName="sapui5.group3.casestudy.controller.Details"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:f="sap.ui.layout.form"

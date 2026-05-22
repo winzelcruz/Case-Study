@@ -16,7 +16,7 @@ sap.ui.define([
 ], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, Dialog, Button, SimpleForm, Label, Input, DatePicker, ComboBox, Item) {
     "use strict";
 
-    return Controller.extend("sapui5.casestudy.casestudy.controller.Main", {
+    return Controller.extend("sapui5.group3.casestudy.controller.Main", {
         formatter: {
             statusState: function (sStatus) {
                 switch (sStatus) {
