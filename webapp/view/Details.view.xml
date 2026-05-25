@@ -9,7 +9,8 @@
 >
     <fd:DynamicPage
         id="dynamicPageDetailsId"
-        showFooter="true">
+        showFooter="true"
+    >
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
@@ -46,12 +47,24 @@
 
                         <Label text="{i18n>lblReceivingPlant}" />
                         <Text
-                            text="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"
+                            text="{
+                                parts: [
+                                    {path:'localOrders>ReceivingPlantCode'},
+                                    {path:'localOrders>ReceivingPlantName'}
+                                ],
+                                formatter: '.formatter.plantFormat'
+                            }"
                         />
 
                         <Label text="{i18n>lblDeliveringPlant}" />
                         <Text
-                            text="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"
+                            text="{
+                                parts: [
+                                    {path:'localOrders>DeliveringPlantCode'},
+                                    {path:'localOrders>DeliveringPlantName'}
+                                ],
+                                formatter: '.formatter.plantFormat'
+                            }"
                         />
 
                         <Label text="{i18n>lblStatus}" />
@@ -67,27 +80,32 @@
                                 }"
                     items="{orderProducts>/}"
                     width="auto"
-                    class="sapUiResponsiveMargin sapUiLargePaddingTop">
+                    class="sapUiResponsiveMargin sapUiLargePaddingTop"
+                >
                     <columns>
                         <Column
                             width="25%"
-                            demandPopin="true">
-                            <Text text="Product Name" />
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colProductName}" />
                         </Column>
                         <Column
                             width="25%"
-                            demandPopin="true">
-                            <Text text="Quantity" />
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colQuantity}" />
                         </Column>
                         <Column
                             width="25%"
-                            demandPopin="true">
-                            <Text text="Price Per Quantity" />
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colPriceperQuantity}" />
                         </Column>
                         <Column
                             width="25%"
-                            demandPopin="true">
-                            <Text text="Total Price" />
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colTotalPrice}" />
                         </Column>
                     </columns>
                     <items>
@@ -95,7 +113,13 @@
                             <cells>
                                 <VBox>
                                     <Text
-                                        text="{orderProducts>ProductID} - {orderProducts>ProductName}"
+                                        text="{
+                                            parts: [
+                                                {path:'orderProducts>ProductID'},
+                                                {path:'orderProducts>ProductName'}
+                                            ],
+                                            formatter: '.formatter.productFormat'
+                                        }"
                                     />
                                 </VBox>
                                 <VBox>
@@ -127,10 +151,12 @@
                 <ToolbarSpacer />
                 <Button
                     text="{i18n>tlpEdit}"
-                    press="onEdit"/>
+                    press="onEdit"
+                />
                 <Button
                     text="{i18n>tlpCancel}"
-                    press="onCancel"/>
+                    press="onCancel"
+                />
             </OverflowToolbar>
         </fd:footer>
     </fd:DynamicPage>

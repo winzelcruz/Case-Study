@@ -23,6 +23,14 @@ sap.ui.define([
                 }).format(total);
             },
 
+            plantFormat: function (sCode, sName) {
+                return (sCode != null ? String(sCode) : "") + " - " + (sName != null ? String(sName) : "");
+            },
+
+            productFormat: function (sId, sName) {
+                return (sId != null ? String(sId) : "") + " - " + (sName != null ? String(sName) : "");
+            },
+
             formatProductCount: function (aProducts) {
                 const iCount = Array.isArray(aProducts) ? aProducts.length : 0;
                 return "Product (" + iCount + ")";
@@ -74,16 +82,16 @@ sap.ui.define([
                 success: function (oData) {
 
                     if (!oLocalModel || iIndex < 0) {
-                        var aMockStatuses = [
+                        const aMockStatuses = [
                             Constants.STATUS.CREATED,
                             Constants.STATUS.RELEASED,
                             Constants.STATUS.PARTIAL,
                             Constants.STATUS.DELIVERED
                         ];
 
-                        var idx = Number(oData.OrderID) || 0;
+                        const idx = Number(oData.OrderID) || 0;
 
-                        var oFormattedOrder = {
+                        const oFormattedOrder = {
                             OrderNumber: String(oData.OrderID),
                             CreationDate: oData.OrderDate,
 
@@ -127,10 +135,6 @@ sap.ui.define([
                     oView.setModel(new JSONModel(aDetails), "orderProducts");
                 }.bind(this),
 
-                error: function (e) {
-                    console.error("Failed to load order:", e);
-                    oView.setModel(new JSONModel([]), "orderProducts");
-                }.bind(this)
             });
         },
 
