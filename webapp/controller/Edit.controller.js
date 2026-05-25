@@ -10,13 +10,34 @@ sap.ui.define([
     return Controller.extend("sapui5.casestudy.casestudy.controller.Edit", {
         
         formatter: {
+
+            // show Text field on Products table when NOT new entry/add button pressed
             showText: function(isNew) {
-                return !isNew;   // show Text when NOT new
+                return !isNew;   
             },
 
+            // show Input on Products table when new/add button pressed
             showInput: function(isNew) {
-                return isNew;    // show Input when new
+                return isNew;    
+            },
+
+            //get Products count for header title based on on load or add/delete actions
+            getProductTitle: function (aProducts, sText) {
+
+                let iCount = 0;
+
+                if (aProducts !== null && aProducts !== undefined) {
+                    iCount = aProducts.length;
+                }
+
+                if (sText !== null && sText !== undefined) {
+                    return sText.replace("{0}", iCount);
+                }
+
+                return "Products (" + iCount + ")";
+
             }
+
         },
         
         onInit() {
@@ -33,7 +54,7 @@ sap.ui.define([
             let sOrderNumber = oEvent.getParameter("arguments").orderNumber;
             let oModel = sap.ui.getCore().getModel("localOrders");
 
-            // ✅ attach model to view
+            //attach model to view
             this.getView().setModel(oModel, "localOrders");
 
             let aOrders = oModel.getProperty("/");
@@ -41,7 +62,7 @@ sap.ui.define([
                 String(o.OrderNumber) === String(sOrderNumber)
             );
 
-            // ✅ bind using FULL model path
+            //bind using FULL model path
             this.getView().bindElement({
                 path: "localOrders>/" + iIndex
             });
@@ -50,37 +71,45 @@ sap.ui.define([
             this.getView().getModel().read("/Products", {
                 success: function (oData) {
                     this._aProducts = oData.results; // store for mapping
+                    console.log("Products loaded", this._aProducts);
                 }.bind(this)
             });
 
+            // metadata: Order>Order Details>Product (to get Product Name in one call)
+            // this is used because Product Name is not stored in localOrders and we want to avoid multiple calls for each product
             this.getView().getModel().read("/Orders(" + sOrderNumber + ")", {
                 urlParameters: {
-                    "$expand": "Order_Details"
+                    "$expand": "Order_Details/Product"
                 },
                 success: function (oData) {
 
                     let aDetails = oData.Order_Details.results;
 
-                    // ✅ SIMPLE: map ProductName
+                    //Map ProductName
                     aDetails.forEach(function(item) {
 
+                        // find product from cached products list
                         let oProduct = this._aProducts.find(function(prod) {
-                            return prod.ProductID === item.ProductID;
+                            return String(prod.ProductID) === String(item.ProductID);
                         });
 
-                        if (oProduct) {
+                        if (oProduct !== undefined && oProduct !== null) {
                             item.ProductName = oProduct.ProductName;
-                            item.UnitPrice = oProduct.UnitPrice; // optional if needed
+                            item.UnitPrice = oProduct.UnitPrice;
                         }
 
+                        // add isNew flag for UI control (show Text or Input)
                         item.isNew = false;
 
                     }.bind(this));
 
+                    // bind to separate model for products to avoid confusion with order header data
                     this.getView().setModel(
                         new sap.ui.model.json.JSONModel(aDetails),
                         "orderProducts"
                     );
+
+                    console.log(aDetails);
 
                 }.bind(this)
             });
@@ -89,24 +118,28 @@ sap.ui.define([
 
         onAddItem: function () {
 
+            //Get model and table references
             let oModel = this.getView().getModel("orderProducts");
             let oTable = this.byId("idProductsTable");
 
-            // ✅ get array directly
+            //Get array directly
             let aProducts = oModel.getProperty("/");
 
-            // ✅ add new row
+            //Add new row
             aProducts.push({
                 ProductID: "",
-                ProductName: "",
+                Product: {
+                    ProductName: ""
+                },
                 Quantity: 1,
                 UnitPrice: 0,
                 isNew: true,
                 selected: false
             });
 
-            // ✅ refresh model
-            oModel.setProperty("/", aProducts);
+            //oModel.setProperty("/", aProducts);
+            //Refresh UI and clear selection
+            oTable.getBinding("items").refresh();
             oTable.removeSelections(true);
         },
         
@@ -129,9 +162,10 @@ sap.ui.define([
             }
 
             // ✅ important fix
-            oModel.setProperty("/", []);
-            oModel.setProperty("/", aProducts);
-
+            //oModel.setProperty("/", []);
+            //oModel.setProperty("/", aProducts);
+            
+            //Refresh UI and clear selection
             oTable.removeSelections();
             oTable.getBinding("items").refresh();
         },
@@ -152,6 +186,7 @@ sap.ui.define([
             );
         },
 
+        //Save changes to local model and navigate back to detail page
         onPressSave: function () {  
             
             let oHistory = History.getInstance(); 
@@ -173,8 +208,27 @@ sap.ui.define([
                     onClose: function (sAction) {
                         if (sAction === MessageBox.Action.YES) {
 
-                            // ✅ save status (already bound to localOrders)
-                            // ✅ save products
+                            // assign new IDs to new items (mock logic since we don't have a backend)           
+                            let iMaxId = 0;
+
+                            // find highest ProductID
+                            aProducts.forEach(function(item) {
+                                let iId = Number(item.ProductID);
+
+                                if (iId > iMaxId) {
+                                    iMaxId = iId;
+                                }
+                            });
+
+                            // assign new ID to new items
+                            aProducts.forEach(function(item) {
+                                if (item.isNew === true) {
+                                    iMaxId = iMaxId + 1;
+                                    item.ProductID = iMaxId;
+                                }
+                            });
+
+                            // update products in local model
                             oLocal.setProperty("/" + iIndex + "/Order_Details", aProducts);
 
                             // Proceed with routing

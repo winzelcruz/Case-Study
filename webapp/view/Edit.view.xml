@@ -47,7 +47,7 @@
 
                     <headerToolbar>
                         <Toolbar>
-                            <Title text="Product ({= ${/Products}.length })" />
+                            <Title text="{ parts: ['orderProducts>/','i18n>products'], formatter: '.formatter.getProductTitle'}" />
                             <ToolbarSpacer/>
                             <Button id="addItemButton" icon="sap-icon://add" press="onAddItem" />
                             <Button id="deleteItemButton" icon="sap-icon://delete" press="onDeleteItem" />
@@ -73,8 +73,8 @@
                         <ColumnListItem>
                             <cells>
                                 <VBox>
-                                    <Text text="{orderProducts>ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showText'}" />
-                                    <Input value="{orderProducts>ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showInput'}" />
+                                    <Text text="{orderProducts>Product/ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showText'}" />
+                                    <Input value="{orderProducts>Product/ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showInput'}" />
                                 </VBox>
 
                                 <VBox>
