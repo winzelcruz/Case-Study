@@ -252,9 +252,9 @@ sap.ui.define([
             });
         },
         _updateTableCount: function () {
-            const oTable = this.byId("ordersTableId");
-            const iLength = oTable.getBinding("items").getLength();
-
+            var oTable = this.byId("ordersTableId");
+            var iLength = oTable.getBinding("items").getLength();
+            
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
         }
     });
