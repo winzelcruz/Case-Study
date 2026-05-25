@@ -71,6 +71,7 @@ sap.ui.define([
             // metadata: Order>Order Details>Product (to get Product Name in one call)
             // first check if there are already local changes (products added/deleted) to show in edit page, if not load from OData
             let bEdited = oModel.getProperty("/" + iIndex + "/_edited");
+            let aExisting = oModel.getProperty("/" + iIndex + "/Order_Details");
 
             if (bEdited === true) {
 
