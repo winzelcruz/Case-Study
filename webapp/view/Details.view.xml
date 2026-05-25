@@ -1,0 +1,163 @@
+<mvc:View
+    controllerName="sapui5.group3.casestudy.controller.Details"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:fd="sap.f"
+    height="100%"
+>
+    <fd:DynamicPage
+        id="dynamicPageDetailsId"
+        showFooter="true"
+    >
+        <fd:title>
+            <fd:DynamicPageTitle>
+                <fd:heading>
+                    <Title
+                        text="{i18n>titleDetails}"
+                        level="H1"
+                        titleStyle="H1"
+                    />
+                </fd:heading>
+            </fd:DynamicPageTitle>
+        </fd:title>
+        <fd:content>
+            <VBox>
+                <f:SimpleForm
+                    id="orderDetailForm"
+                    width="auto"
+                    title="{i18n>formtitleDetails}"
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    emptySpanL="4"
+                    emptySpanM="4"
+                    columnsL="1"
+                    columnsM="1"
+                    class="sapUiResponsiveMargin"
+                >
+                    <f:content>
+                        <Label text="{i18n>lblOrderNumber}" />
+                        <Text text="{localOrders>OrderNumber}" />
+
+                        <Label text="{i18n>lblCreationDate}" />
+                        <Text
+                            text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"
+                        />
+
+                        <Label text="{i18n>lblReceivingPlant}" />
+                        <Text
+                            text="{
+                                parts: [
+                                    {path:'localOrders>ReceivingPlantCode'},
+                                    {path:'localOrders>ReceivingPlantName'}
+                                ],
+                                formatter: '.formatter.plantFormat'
+                            }"
+                        />
+
+                        <Label text="{i18n>lblDeliveringPlant}" />
+                        <Text
+                            text="{
+                                parts: [
+                                    {path:'localOrders>DeliveringPlantCode'},
+                                    {path:'localOrders>DeliveringPlantName'}
+                                ],
+                                formatter: '.formatter.plantFormat'
+                            }"
+                        />
+
+                        <Label text="{i18n>lblStatus}" />
+                        <Text text="{localOrders>Status}" />
+                    </f:content>
+                </f:SimpleForm>
+                <!-- Products Table -->
+                <Table
+                    id="idProductsTableDetails"
+                    headerText="{
+                                path: 'orderProducts>/',
+                                formatter: '.formatter.formatProductCount'
+                                }"
+                    items="{orderProducts>/}"
+                    width="auto"
+                    class="sapUiResponsiveMargin sapUiLargePaddingTop"
+                >
+                    <columns>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colProductName}" />
+                        </Column>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colQuantity}" />
+                        </Column>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colPriceperQuantity}" />
+                        </Column>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colTotalPrice}" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <VBox>
+                                    <Text
+                                        text="{
+                                            parts: [
+                                                {path:'orderProducts>ProductID'},
+                                                {path:'orderProducts>ProductName'}
+                                            ],
+                                            formatter: '.formatter.productFormat'
+                                        }"
+                                    />
+                                </VBox>
+                                <VBox>
+                                    <Text text="{orderProducts>Quantity}" />
+                                </VBox>
+                                <VBox>
+                                    <Text
+                                        text="{ path: 'orderProducts>UnitPrice', formatter: '.formatter.to2' }"
+                                    />
+                                </VBox>
+
+                                <Text
+                                    text="{
+                                        parts: [
+                                        { path: 'orderProducts>Quantity' },
+                                        { path: 'orderProducts>UnitPrice' }
+                                        ],
+                                        formatter: '.formatter.calcTotal'
+                                    }"
+                                />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </fd:content>
+        <fd:footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    text="{i18n>tlpEdit}"
+                    press="onEdit"
+                />
+                <Button
+                    text="{i18n>tlpCancel}"
+                    press="onCancel"
+                />
+            </OverflowToolbar>
+        </fd:footer>
+    </fd:DynamicPage>
+</mvc:View>

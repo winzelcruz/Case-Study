@@ -4,7 +4,7 @@
     xmlns:f="sap.f"
     xmlns:fb="sap.ui.comp.filterbar"
     xmlns:core="sap.ui.core">
-    <f:DynamicPage id="dynamicPageId" headerExpanded="true" showFooter="false">
+    <f:DynamicPage id="dynamicPageMainId" headerExpanded="true" showFooter="false">
         <f:header>
             <f:DynamicPageHeader pinnable="true">
                 <f:content>
@@ -68,7 +68,7 @@
                     <Column><Text text="{i18n>colStatus}"/></Column>
                 </columns>
                 <items>
-                    <ColumnListItem type="Navigation">
+                    <ColumnListItem type="Navigation" press=".onClickOrder">
                         <cells>
                             <Text text="{localOrders>OrderNumber}"/>
                             <Text text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"/>

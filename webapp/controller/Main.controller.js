@@ -117,7 +117,7 @@ sap.ui.define([
 
             if (!this._pCreateDialog) {
                 this._pCreateDialog = new Dialog({
-                    title: "{i18n>titleCreateOrder}", 
+                    title: "{i18n>titleCreateOrder}",
                     contentWidth: "400px",
                     content: new SimpleForm({
                         editable: true,
@@ -130,26 +130,26 @@ sap.ui.define([
 
                             new Label({ text: "{i18n>lblCreationDate}", required: true }),
                             new DatePicker({
-                                id: oView.createId("newCreationDateId"), 
+                                id: oView.createId("newCreationDateId"),
                                 valueFormat: "yyyy-MM-dd",
                                 displayFormat: "dd MMM yyyy"
                             }),
 
                             new Label({ text: "{i18n>colReceivingPlant}", required: true }),
                             new Input({
-                                id: oView.createId("newRecPlantId"), 
+                                id: oView.createId("newRecPlantId"),
                                 value: "9101"
                             }),
 
                             new Label({ text: "{i18n>colDeliveringPlant}", required: true }),
                             new Input({
-                                id: oView.createId("newDelPlantId"), 
+                                id: oView.createId("newDelPlantId"),
                                 value: "9102"
                             }),
 
                             new Label({ text: "{i18n>colStatus}", required: true }),
                             new ComboBox({
-                                id: oView.createId("newStatusId"), 
+                                id: oView.createId("newStatusId"),
                                 selectedKey: "Created",
                                 items: [
                                     new Item({ key: "Created", text: "{i18n>statusCreated}" }),
@@ -254,8 +254,19 @@ sap.ui.define([
         _updateTableCount: function () {
             const oTable = this.byId("ordersTableId");
             const iLength = oTable.getBinding("items").getLength();
-            
+
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
+        },
+
+        onClickOrder: function (oEvent) {
+            const oItem = oEvent.getSource();
+            const oContext = oItem.getBindingContext("localOrders");
+            const oOrder = oContext.getObject();
+
+
+            this.getOwnerComponent().getRouter().navTo("RouteDetails", {
+                OrderNumber: oOrder.OrderNumber
+            });
         }
     });
 });

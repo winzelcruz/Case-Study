@@ -91,16 +91,41 @@
       "routes": [
         {
           "name": "RouteMain",
-          "pattern": ":?query:",
+          "pattern": "",
           "target": [
             "TargetMain"
+          ]
+        },
+        {
+          "name": "RouteDetails",
+          "pattern": "Details/{OrderNumber}",
+          "target": [
+            "TargetDetails"
+          ]
+        },
+        {
+          "name": "RouteEdit",
+          "pattern": "Edit/{OrderNumber}",
+          "target": [
+            "TargetEdit"
           ]
         }
       ],
       "targets": {
         "TargetMain": {
           "id": "Main",
-          "name": "Main"
+          "name": "Main",
+          "level": 1
+        },
+        "TargetDetails": {
+          "id": "Details",
+          "name": "Details",
+          "level": 2
+        },
+        "TargetEdit": {
+          "id": "Edit",
+          "name": "Edit",
+          "level": 3
         }
       }
     },
