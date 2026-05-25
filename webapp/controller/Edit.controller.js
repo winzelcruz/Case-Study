@@ -8,7 +8,7 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("sapui5.group3.casestudy.controller.Edit", {
-        
+
         formatter: {
 
             //get Products count for header title based on onload or add/delete actions
@@ -29,7 +29,7 @@ sap.ui.define([
             }
 
         },
-        
+
         onInit() {
             //initiate binding router        
             let oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -38,7 +38,7 @@ sap.ui.define([
             //initiate constants
             this.getView().setModel(new JSONModel(Constants), "Constants");
         },
-        
+
         _onObjectMatched: function (oEvent) {
 
             let sOrderNumber = oEvent.getParameter("arguments").OrderNumber;
@@ -49,7 +49,7 @@ sap.ui.define([
             this.getView().setModel(oModel, "localOrders");
 
             let aOrders = oModel.getProperty("/");
-            let iIndex = aOrders.findIndex(o => 
+            let iIndex = aOrders.findIndex(o =>
                 String(o.OrderNumber) === String(sOrderNumber)
             );
 
@@ -62,10 +62,10 @@ sap.ui.define([
 
             //load Products with Supplier for mapping UnitPrice and ProductName in details 
             this.getView().getModel().read("/Products", {
-            urlParameters: { "$expand": "Supplier" },  
-            success: function (oData) {
-                this._aProducts = oData.results || [];
-            }.bind(this)
+                urlParameters: { "$expand": "Supplier" },
+                success: function (oData) {
+                    this._aProducts = oData.results || [];
+                }.bind(this)
             });
 
             // metadata: Order>Order Details>Product (to get Product Name in one call)
@@ -92,9 +92,9 @@ sap.ui.define([
 
                         let aDetails = oData.Order_Details.results;
 
-                        aDetails.forEach(function(item) {
+                        aDetails.forEach(function (item) {
 
-                            let oProduct = this._aProducts.find(function(prod) {
+                            let oProduct = this._aProducts.find(function (prod) {
                                 return String(prod.ProductID) === String(item.ProductID);
                             });
 
@@ -115,13 +115,13 @@ sap.ui.define([
 
             }
 
-        },   
+        },
 
         // Handler for Add button to open dialog
         onAddItem: function () {
             this._openProductDialog();
         },
-        
+
         // Open dialog to select product and quantity
         _openProductDialog: function () {
 
@@ -181,10 +181,8 @@ sap.ui.define([
 
             // map plant code to supplier ID (example: "9101" -> "1", "9102" -> "2")
             let sSupplierId = "";
-            if (sPlantCode === "9101") 
-                { sSupplierId = "1"; }
-            if (sPlantCode === "9102") 
-                { sSupplierId = "2"; }
+            if (sPlantCode === "9101") { sSupplierId = "1"; }
+            if (sPlantCode === "9102") { sSupplierId = "2"; }
             else {
                 MessageBox.error("Unknown Plant Code: " + sPlantCode + ". Cannot determine SupplierID for product filtering.");
                 return;
@@ -323,18 +321,18 @@ sap.ui.define([
         },
 
         //Save changes to local model and navigate back to detail page
-        onPressSave: function () {  
-            
-            let oHistory = History.getInstance(); 
-            let sPreviousHash = oHistory.getPreviousHash(); 
-            let oRouter = this.getOwnerComponent().getRouter(); 
+        onPressSave: function () {
+
+            let oHistory = History.getInstance();
+            let sPreviousHash = oHistory.getPreviousHash();
+            let oRouter = this.getOwnerComponent().getRouter();
 
             let oLocal = this.getView().getModel("localOrders");
             let oProducts = this.getView().getModel("orderProducts");
 
             let aProducts = oProducts.getProperty("/");
             let iIndex = this._iOrderIndex;
-            
+
             let sOrderNumber = this.getView().getBindingContext("localOrders").getProperty("OrderNumber");
 
             MessageBox.confirm(
@@ -362,10 +360,10 @@ sap.ui.define([
                                     onClose: function () {
 
                                         //navigate ONLY after OK
-                                        if (sPreviousHash !== undefined) { 
-                                            window.history.go(-1); 
-                                        } else { 
-                                            oRouter.navTo("Detail", {}, true); 
+                                        if (sPreviousHash !== undefined) {
+                                            window.history.go(-1);
+                                        } else {
+                                            oRouter.navTo("Detail", {}, true);
                                         }
 
                                     }
@@ -376,14 +374,14 @@ sap.ui.define([
                 }
             );
 
-        },    
+        },
 
         // Go back to detail page without saving changes
         onPressCancel: function () {
 
-            let oHistory = History.getInstance(); 
-            let sPreviousHash = oHistory.getPreviousHash(); 
-            let oRouter = this.getOwnerComponent().getRouter(); 
+            let oHistory = History.getInstance();
+            let sPreviousHash = oHistory.getPreviousHash();
+            let oRouter = this.getOwnerComponent().getRouter();
 
             MessageBox.confirm(
                 "Are you sure you want to cancel the changes done in the page?",
@@ -394,11 +392,11 @@ sap.ui.define([
                     onClose: function (sAction) {
                         if (sAction === MessageBox.Action.YES) {
                             // Proceed with routing
-                            if (sPreviousHash !== undefined) { 
-                                window.history.go(-1); 
-                            } else { 
-                                oRouter.navTo("Detail", {}, true); 
-                            } 
+                            if (sPreviousHash !== undefined) {
+                                window.history.go(-1);
+                            } else {
+                                oRouter.navTo("Detail", {}, true);
+                            }
                         }
                     }
                 }
