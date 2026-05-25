@@ -96,20 +96,20 @@
             "TargetMain"
           ]
         },
-          {
-            "name": "RouteDetails",
-            "pattern": "Details/{OrderNumber}",
-            "target": [
-              "TargetDetails"
-            ]
-          },
-          {
-            "name": "RouteEdit",
-            "pattern": "Edit/{OrderNumber}",
-            "target": [
-              "TargetEdit"
-            ]
-          }
+        {
+          "name": "RouteDetails",
+          "pattern": "Details/{OrderNumber}",
+          "target": [
+            "TargetDetails"
+          ]
+        },
+        {
+          "name": "RouteEdit",
+          "pattern": "Edit/{OrderNumber}",
+          "target": [
+            "TargetEdit"
+          ]
+        }
       ],
       "targets": {
         "TargetMain": {
@@ -122,7 +122,7 @@
           "name": "Details",
           "level": 2
         },
-                "TargetEdit": {
+        "TargetEdit": {
           "id": "Edit",
           "name": "Edit",
           "level": 3
