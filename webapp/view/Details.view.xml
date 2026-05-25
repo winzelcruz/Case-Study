@@ -5,117 +5,133 @@
     xmlns:f="sap.ui.layout.form"
     xmlns:core="sap.ui.core"
     xmlns:fd="sap.f"
-    height="100%">
-
-    <fd:DynamicPage id="dynamicPageDetailsId" showFooter= "true">
-
+    height="100%"
+>
+    <fd:DynamicPage
+        id="dynamicPageDetailsId"
+        showFooter="true">
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
-                    <Title text="{i18n>titleDetails}" level="H1" titleStyle="H1"/>
+                    <Title
+                        text="{i18n>titleDetails}"
+                        level="H1"
+                        titleStyle="H1"
+                    />
                 </fd:heading>
             </fd:DynamicPageTitle>
         </fd:title>
-
         <fd:content>
-
             <VBox>
-
                 <f:SimpleForm
                     id="orderDetailForm"
                     width="auto"
-                    title="{i18n>formtitleDetails}"                
+                    title="{i18n>formtitleDetails}"
                     labelSpanL="4"
                     labelSpanM="4"
                     emptySpanL="4"
                     emptySpanM="4"
                     columnsL="1"
                     columnsM="1"
-                    class="sapUiResponsiveMargin">
+                    class="sapUiResponsiveMargin"
+                >
+                    <f:content>
+                        <Label text="{i18n>lblOrderNumber}" />
+                        <Text text="{localOrders>OrderNumber}" />
 
-                <f:content>
-                    <Label text="{i18n>lblOrderNumber}"/>
-                    <Text text="{localOrders>OrderNumber}"/>
+                        <Label text="{i18n>lblCreationDate}" />
+                        <Text
+                            text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"
+                        />
 
-                    <Label text="{i18n>lblCreationDate}"/>
-                    <Text text="{path: 'localOrders>CreationDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern: 'dd MMM yyyy'}}"/>
+                        <Label text="{i18n>lblReceivingPlant}" />
+                        <Text
+                            text="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"
+                        />
 
-                    <Label text="{i18n>lblReceivingPlant}"/>
-                    <Text text="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"/>
+                        <Label text="{i18n>lblDeliveringPlant}" />
+                        <Text
+                            text="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"
+                        />
 
-                    <Label text="{i18n>lblDeliveringPlant}"/>
-                    <Text text="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"/>
-
-                    <Label text="{i18n>lblStatus}"/>
-                    <Text text="{localOrders>Status}"/>
-                </f:content>
-
+                        <Label text="{i18n>lblStatus}" />
+                        <Text text="{localOrders>Status}" />
+                    </f:content>
                 </f:SimpleForm>
-
                 <!-- Products Table -->
                 <Table
-                    id="idProductsTable"
-                    headerText="Product (3)"
+                    id="idProductsTableDetails"
+                    headerText="{
+                                path: 'orderProducts>/',
+                                formatter: '.formatter.formatProductCount'
+                                }"
+                    items="{orderProducts>/}"
                     width="auto"
-                    class="sapUiResponsiveMargin sapUiLargePaddingTop"
->
-
+                    class="sapUiResponsiveMargin sapUiLargePaddingTop">
                     <columns>
-                        <Column width="12em">
-                            <Text text="{i18n>colProductName}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true">
+                            <Text text="Product Name" />
                         </Column>
-                        <Column minScreenWidth="Tablet" demandPopin="true">
-                            <Text text="{i18n>colQuantity}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true">
+                            <Text text="Quantity" />
                         </Column>
-                        <Column minScreenWidth="Tablet" demandPopin="true" hAlign="End">
-                            <Text text="{i18n>colPriceperQuantity}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true">
+                            <Text text="Price Per Quantity" />
                         </Column>
-                        <Column hAlign="End">
-                            <Text text="{i18n>colTotalPrice}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true">
+                            <Text text="Total Price" />
                         </Column>
                     </columns>
-
                     <items>
                         <ColumnListItem>
                             <cells>
-                                <Text text="{localOrders>ProductName}"/>
-                                <Text text="{localOrders>Quantity}"/>
-                                <Text text="{localOrders>PricePerQuantity}"/>
-                                <Text text="{localOrders>TotalPrice}"/>
-                            </cells>
-                        </ColumnListItem>
-                        <ColumnListItem>
-                            <cells>
-                                <Text text="{localOrders>ProductName}"/>
-                                <Text text="{localOrders>Quantity}"/>
-                                <Text text="{localOrders>PricePerQuantity}"/>
-                                <Text text="{localOrders>TotalPrice}"/>
-                            </cells>
-                        </ColumnListItem>
-                        <ColumnListItem>
-                            <cells>
-                                <Text text="{localOrders>Products>ProductName}"/>
-                                <Text text="{localOrders>Quantity}"/>
-                                <Text text="{localOrders>PricePerQuantity}"/>
-                                <Text text="{localOrders>TotalPrice}"/>
+                                <VBox>
+                                    <Text
+                                        text="{orderProducts>ProductID} - {orderProducts>ProductName}"
+                                    />
+                                </VBox>
+                                <VBox>
+                                    <Text text="{orderProducts>Quantity}" />
+                                </VBox>
+                                <VBox>
+                                    <Text
+                                        text="{ path: 'orderProducts>UnitPrice', formatter: '.formatter.to2' }"
+                                    />
+                                </VBox>
+
+                                <Text
+                                    text="{
+                                        parts: [
+                                        { path: 'orderProducts>Quantity' },
+                                        { path: 'orderProducts>UnitPrice' }
+                                        ],
+                                        formatter: '.formatter.calcTotal'
+                                    }"
+                                />
                             </cells>
                         </ColumnListItem>
                     </items>
-
                 </Table>
-
             </VBox>
-
         </fd:content>
-
         <fd:footer>
             <OverflowToolbar>
-                <ToolbarSpacer/>
-                <Button text="{i18n>tlpEdit}" press="onEdit"/>
-                <Button text="{i18n>tlpCancel}" press="onCancel"/>
+                <ToolbarSpacer />
+                <Button
+                    text="{i18n>tlpEdit}"
+                    press="onEdit"/>
+                <Button
+                    text="{i18n>tlpCancel}"
+                    press="onCancel"/>
             </OverflowToolbar>
         </fd:footer>
-
     </fd:DynamicPage>
-
 </mvc:View>
