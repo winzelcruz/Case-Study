@@ -83,8 +83,29 @@ sap.ui.define([
                 ? "/Orders(" + orderNumberParam + ")"
                 : "/Orders('" + encodeURIComponent(orderNumberParam) + "')";
 
-            odataModel.read(orderEntityPath, {
-                urlParameters: { "$expand": "Order_Details/Product" },
+            //anne.marie.c.mendoza add code to check if data persists
+            // check if already saved locally
+            let aExistingDetails = oLocalModel.getProperty("/" + iIndex + "/Order_Details");
+
+            if (aExistingDetails !== undefined && aExistingDetails !== null){
+     
+                // map ProductName from saved structure
+                aExistingDetails.forEach(function(item) {
+                    if (item.Product && item.Product.ProductName) {
+                        item.ProductName = item.Product.ProductName;
+                    }
+                });
+
+                oView.setModel(
+                    new JSONModel(aExistingDetails),
+                    "orderProducts"
+                );
+
+            } else {
+
+                // fallback to OData only if no local data
+                odataModel.read(orderEntityPath, {
+                    urlParameters: { "$expand": "Order_Details/Product" },
 
                 success: function (orderEntityData) {
 
