@@ -1,4 +1,4 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:fd="sap.f" controllerName="sapui5.casestudy.casestudy.controller.Edit" height="100%">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:fd="sap.f" controllerName="sapui5.group3.casestudy.controller.Edit" height="100%">
 
     <fd:DynamicPage id="dynamicPageIdEdit" showFooter="true">
 
@@ -73,18 +73,15 @@
                         <ColumnListItem>
                             <cells>
                                 <VBox>
-                                    <Text text="{orderProducts>Product/ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showText'}" />
-                                    <Input value="{orderProducts>Product/ProductName}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showInput'}" />
+                                    <Text text="{orderProducts>ProductID} - {orderProducts>Product/ProductName}" />
                                 </VBox>
 
                                 <VBox>
-                                    <Text text="{orderProducts>Quantity}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showText'}" />
-                                    <Input value="{orderProducts>Quantity}" type="Number" visible="{path:'orderProducts>isNew', formatter:'.formatter.showInput'}" change="onCalculateTotal"/>
+                                    <Text text="{orderProducts>Quantity}"/>
                                 </VBox>
 
                                 <VBox>
-                                    <Text text="{orderProducts>UnitPrice}" visible="{path:'orderProducts>isNew', formatter:'.formatter.showText'}" />
-                                    <Input value="{orderProducts>UnitPrice}" type="Number" visible="{path:'orderProducts>isNew', formatter:'.formatter.showInput'}" change="onCalculateTotal"/>
+                                    <Text text="{orderProducts>UnitPrice}"/>
                                 </VBox>
 
                                 <Text text="{= ${orderProducts>Quantity} * ${orderProducts>UnitPrice} }" />
