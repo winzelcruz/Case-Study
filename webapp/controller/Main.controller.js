@@ -255,6 +255,17 @@ sap.ui.define([
             var iLength = oTable.getBinding("items").getLength();
             
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
-        }
+        },
+
+        onClickOrder: function(oEvent) {
+    const oItem = oEvent.getSource();
+    const oContext = oItem.getBindingContext("localOrders");
+    const oOrder = oContext.getObject();
+
+
+    this.getOwnerComponent().getRouter().navTo("RouteDetails", {
+        OrderNumber: oOrder.OrderNumber
+    });
+}
     });
 });
