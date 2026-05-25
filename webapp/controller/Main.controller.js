@@ -261,8 +261,6 @@ onClickOrder: function(oEvent) {
     const oContext = oItem.getBindingContext("localOrders");
     const oOrder = oContext.getObject();
 
-    MessageToast.show(oOrder.OrderNumber + " clicked!");
-
     this.getOwnerComponent().getRouter().navTo("RouteDetails", {
         OrderNumber: oOrder.OrderNumber
     });
