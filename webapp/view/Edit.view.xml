@@ -5,7 +5,7 @@
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
-                    <Title text="Edit Order" level="H1" titleStyle="H1"/>
+                    <Title text="{i18n>titleEditOrder}" level="H1" titleStyle="H1"/>
                 </fd:heading>
             </fd:DynamicPageTitle>
         </fd:title>
@@ -17,25 +17,25 @@
                 <f:SimpleForm id="idSimpleForm" editable="true" layout="ResponsiveGridLayout" title="{i18n>editOrder}" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" width="auto" class="sapUiResponsiveMargin">
 
                     <f:content>
-                        <Label text="Order Number"/>
+                        <Label text="{i18n>lblOrderNumber}"/>
                         <Input xmlns="sap.m" value="{localOrders>OrderNumber}" id="orderNumberInput" editable="false"/>
 
-                        <Label text="Created On"/>
+                        <Label text="{i18n>lblCreationDate}"/>
                         <Input xmlns="sap.m" value="{localOrders>CreationDate}" id="createdOnInput" editable="false"/>
 
-                        <Label text="Receiving Plant"/>
+                        <Label text="{i18n>colReceivingPlant}"/>
                         <Input xmlns="sap.m" value="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}" id="receivingPlantInput" editable="false"/>
 
-                        <Label text="Delivering Plant"/>
+                        <Label text="{i18n>colDeliveringPlant}"/>
                         <Input xmlns="sap.m" value="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}" id="deliveringPlantInput" editable="false"/>
 
-                        <Label text="Status"/>
+                        <Label text="{i18n>colStatus}"/>
                         <Select xmlns="sap.m" id="select0" enabled="true" editable="true" selectedKey="{localOrders>Status}">
                             <items>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/CREATED}" text="Created" id="item3"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/RELEASED}" text="Released" id="item4"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/PARTIAL}" text="Partially Completed" id="item5"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/DELIVERED}" text="Delivered" id="item6"/>
+                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/CREATED}" text="{i18n>statusCreated}" id="item3"/>
+                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/RELEASED}" text="{i18n>statusReleased}" id="item4"/>
+                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/PARTIAL}" text="{i18n>statusPartiallyCompleted}" id="item5"/>
+                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/DELIVERED}" text="{i18n>statusDelivered}" id="item6"/>
                             </items>
                         </Select>
                         
@@ -56,16 +56,16 @@
 
                     <columns>
                         <Column width="25%" demandPopin="true">
-                            <Text text="Product Name"/>
+                            <Text text="{i18n>colProductName}"/>
                         </Column>
                         <Column width="25%" demandPopin="true">
-                            <Text text="Quantity"/>
+                            <Text text="{i18n>colQuantity}"/>
                         </Column>
                         <Column width="25%" demandPopin="true">
-                            <Text text="Price Per Quantity"/>
+                            <Text text="{i18n>colPricePerQuantity}"/>
                         </Column>
                         <Column width="25%" demandPopin="true">
-                            <Text text="Total Price"/>
+                            <Text text="{i18n>colTotalPrice}"/>
                         </Column>
                     </columns>
 
@@ -98,8 +98,8 @@
         <fd:footer>
             <OverflowToolbar>
                 <ToolbarSpacer/>
-                <Button id="saveButton" text="Save" type="Emphasized" press="onPressSave"/>
-                <Button id="cancelButton" text="Cancel" type="Reject" press="onPressCancel"/>
+                <Button id="saveButton" text="{i18n>btnSave}" type="Emphasized" press="onPressSave"/>
+                <Button id="cancelButton" text="{i18n>btnCancel}" type="Reject" press="onPressCancel"/>
             </OverflowToolbar>
         </fd:footer>
 
