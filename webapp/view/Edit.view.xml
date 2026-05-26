@@ -5,7 +5,7 @@
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
-                    <Title text="{i18n>titleEditOrder}" level="H1" titleStyle="H1"/>
+                    <Title text="{i18n>editOrder}" level="H1" titleStyle="H1"/>
                 </fd:heading>
             </fd:DynamicPageTitle>
         </fd:title>
@@ -62,7 +62,7 @@
                             <Text text="{i18n>colQuantity}"/>
                         </Column>
                         <Column width="25%" demandPopin="true">
-                            <Text text="{i18n>colPricePerQuantity}"/>
+                            <Text text="{i18n>colPriceperQuantity}"/>
                         </Column>
                         <Column width="25%" demandPopin="true">
                             <Text text="{i18n>colTotalPrice}"/>

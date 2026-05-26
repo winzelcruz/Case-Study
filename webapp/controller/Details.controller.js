@@ -25,12 +25,12 @@ sap.ui.define([
 
             plantFormat: function (plantCode, plantName) {
                 return (plantCode != null ? String(plantCode) : "") + " - " +
-                       (plantName != null ? String(plantName) : "");
+                    (plantName != null ? String(plantName) : "");
             },
 
             productFormat: function (productId, productName) {
                 return (productId != null ? String(productId) : "") + " - " +
-                       (productName != null ? String(productName) : "");
+                    (productName != null ? String(productName) : "");
             },
 
             formatProductCount: function (products) {
@@ -69,6 +69,9 @@ sap.ui.define([
             if (localOrdersModel && typeof localOrdersModel.getProperty === "function") {
                 view.setModel(localOrdersModel, "localOrders");
 
+                //anne.marie.c.mendoza bind to component-level model to access in edit page
+                this.getOwnerComponent().setModel(localOrdersModel, "localOrders");
+                
                 const localOrders = localOrdersModel.getProperty("/") || [];
                 localOrderIndex = localOrders.findIndex(order =>
                     String(order.OrderNumber) === String(orderNumberParam)
@@ -83,76 +86,114 @@ sap.ui.define([
                 ? "/Orders(" + orderNumberParam + ")"
                 : "/Orders('" + encodeURIComponent(orderNumberParam) + "')";
 
-            odataModel.read(orderEntityPath, {
-                urlParameters: { "$expand": "Order_Details/Product" },
+            //anne.marie.c.mendoza add code to check if data persists
+            // check if already saved locally
+            let aExistingDetails = null;
 
-                success: function (orderEntityData) {
+            if (localOrdersModel && localOrderIndex >= 0) {
+                aExistingDetails = localOrdersModel.getProperty("/" + localOrderIndex + "/Order_Details");
+            }
 
-                    // If local order does not exist, build a fallback local model entry
-                    if (!localOrdersModel || localOrderIndex < 0) {
-                        const mockStatusList = [
-                            Constants.STATUS.CREATED,
-                            Constants.STATUS.RELEASED,
-                            Constants.STATUS.PARTIAL,
-                            Constants.STATUS.DELIVERED
-                        ];
+            if (aExistingDetails !== undefined && aExistingDetails !== null) {
 
-                        const orderIdAsNumber = Number(orderEntityData.OrderID) || 0;
-
-                        const formattedOrder = {
-                            OrderNumber: String(orderEntityData.OrderID),
-                            CreationDate: orderEntityData.OrderDate,
-
-                            ReceivingPlantCode: "9101",
-                            ReceivingPlantName: "Singapore Branch " + (orderEntityData.ShipName || ""),
-
-                            DeliveringPlantCode: "9102",
-                            DeliveringPlantName: "Malaysia Storage " + (orderEntityData.ShipCountry || ""),
-
-                            Status: mockStatusList[orderIdAsNumber % mockStatusList.length]
-                        };
-
-                        localOrdersModel = new JSONModel([formattedOrder]);
-                        view.setModel(localOrdersModel, "localOrders");
-                        view.bindElement({ path: "localOrders>/0" });
+                // map ProductName from saved structure
+                aExistingDetails.forEach(function (item) {
+                    if (item.Product && item.Product.ProductName) {
+                        item.ProductName = item.Product.ProductName;
                     }
+                });
 
-                    const orderDetails = (orderEntityData.Order_Details && orderEntityData.Order_Details.results)
-                        ? orderEntityData.Order_Details.results
-                        : [];
+                view.setModel(
+                    new JSONModel(aExistingDetails),
+                    "orderProducts"
+                );
 
-                    orderDetails.forEach(detailItem => {
-                        detailItem.ProductID = detailItem.ProductID != null
-                            ? detailItem.ProductID
-                            : (detailItem.Product ? detailItem.Product.ProductID : null);
+            } else {
 
-                        detailItem.ProductIDText = detailItem.ProductID != null ? String(detailItem.ProductID) : "";
+                odataModel.read(orderEntityPath, {
+                    urlParameters: { "$expand": "Order_Details/Product" },
 
-                        detailItem.ProductName = detailItem.Product
-                            ? detailItem.Product.ProductName
-                            : (detailItem.ProductName || "");
+                    success: function (orderEntityData) {
 
-                        detailItem.UnitPrice = detailItem.UnitPrice != null
-                            ? detailItem.UnitPrice
-                            : (detailItem.Product ? detailItem.Product.UnitPrice : 0);
+                        // If local order does not exist, build a fallback local model entry
+                        if (!localOrdersModel || localOrderIndex < 0) {
+                            const mockStatusList = [
+                                Constants.STATUS.CREATED,
+                                Constants.STATUS.RELEASED,
+                                Constants.STATUS.PARTIAL,
+                                Constants.STATUS.DELIVERED
+                            ];
 
-                        detailItem.Quantity = detailItem.Quantity || 0;
-                        detailItem.isNew = false;
-                    });
+                            const orderIdAsNumber = Number(orderEntityData.OrderID) || 0;
 
-                    view.setModel(new JSONModel(orderDetails), "orderProducts");
-                }.bind(this)
-            });
+                            const formattedOrder = {
+                                OrderNumber: String(orderEntityData.OrderID),
+                                CreationDate: orderEntityData.OrderDate,
+
+                                ReceivingPlantCode: "9101",
+                                ReceivingPlantName: "Singapore Branch " + (orderEntityData.ShipName || ""),
+
+                                DeliveringPlantCode: "9102",
+                                DeliveringPlantName: "Malaysia Storage " + (orderEntityData.ShipCountry || ""),
+
+                                Status: mockStatusList[orderIdAsNumber % mockStatusList.length]
+                            };
+
+                            localOrdersModel = new JSONModel([formattedOrder]);
+                            view.setModel(localOrdersModel, "localOrders");
+                            view.bindElement({ path: "localOrders>/0" });
+                        }
+
+                        const orderDetails = (orderEntityData.Order_Details && orderEntityData.Order_Details.results)
+                            ? orderEntityData.Order_Details.results
+                            : [];
+
+                        orderDetails.forEach(detailItem => {
+                            detailItem.ProductID = detailItem.ProductID != null
+                                ? detailItem.ProductID
+                                : (detailItem.Product ? detailItem.Product.ProductID : null);
+
+                            detailItem.ProductIDText = detailItem.ProductID != null ? String(detailItem.ProductID) : "";
+
+                            detailItem.ProductName = detailItem.Product
+                                ? detailItem.Product.ProductName
+                                : (detailItem.ProductName || "");
+
+                            detailItem.UnitPrice = detailItem.UnitPrice != null
+                                ? detailItem.UnitPrice
+                                : (detailItem.Product ? detailItem.Product.UnitPrice : 0);
+
+                            detailItem.Quantity = detailItem.Quantity || 0;
+                            detailItem.isNew = false;
+                        });
+
+                        view.setModel(new JSONModel(orderDetails), "orderProducts");
+                    }.bind(this)
+                });
+            }
+
         },
 
         onCancel: function () {
             this.getOwnerComponent().getRouter().navTo("RouteMain");
         },
 
+        //anne.marie.c.mendoza add code to navigate to edit page
         onEdit: function () {
-            const router = this.getOwnerComponent().getRouter();
-            const orderNumberText = this.byId("orderNumber").getText(); // sap.m.Text
-            router.navTo("RouteEdit", { OrderNumber: orderNumberText });
+            let oRouter = this.getOwnerComponent().getRouter();
+
+            let oModel = this.getView().getModel("localOrders");
+
+            //force sync to component before navigating
+            this.getOwnerComponent().setModel(oModel, "localOrders");
+
+            let sOrderNumValue = this.getView()
+                .getBindingContext("localOrders")
+                .getProperty("OrderNumber");
+
+            oRouter.navTo("RouteEdit", {
+                OrderNumber: sOrderNumValue
+            });
         },
 
         _readAsync: function (model, path, parameters) {
