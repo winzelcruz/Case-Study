@@ -49,8 +49,10 @@
         </f:header>
         <f:content>
             <Table id="ordersTableId" 
-                   mode="MultiSelect" 
-                   items="{path: 'localOrders>/'}">
+                    mode="MultiSelect" 
+                    items="{path: 'localOrders>/'}"
+                    growing="true"
+                    growingThreshold="250">
                 <headerToolbar>
                     <OverflowToolbar>
                         <Title id="tableTitleId" text="Orders (0)"/>
