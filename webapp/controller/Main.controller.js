@@ -239,7 +239,6 @@ sap.ui.define([
             oModel.refresh(true);
             this._updateTableCount();
             this._pCreateDialog.close();
-            // Success Message
             MessageToast.show(oView.getModel("i18n").getResourceBundle().getText("msgOrderCreatedSuccess", [sNum]));
             oNumControl.setValue("");
             oDateControl.setValue("");
@@ -263,22 +262,21 @@ sap.ui.define([
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.YES) {
                         const oModel = oView.getModel("localOrders");
-                        const aData = oModel.getData();
+                        const aData = oModel.getData() || [];
 
-                        // 1. Get the actual objects to delete instead of just indexes
-                        const aItemsToDelete = aSelectedItems.map(function (oItem) {
-                            return oItem.getBindingContext("localOrders").getObject();
+                        const aOrderNumbersToDelete = aSelectedItems.map(function (oItem) {
+                            return String(oItem.getBindingContext("localOrders").getProperty("OrderNumber"));
                         });
 
-                        // 2. Filter the data array to remove those objects
                         const aNewData = aData.filter(function (oDataObj) {
-                            return !aItemsToDelete.includes(oDataObj);
+                            return !aOrderNumbersToDelete.includes(String(oDataObj.OrderNumber));
                         });
 
-                        // 3. Update model and UI
                         oModel.setData(aNewData);
+                        oModel.refresh(true);
                         oTable.removeSelections(true);
-                        this._updateTableCount();
+                        oTable.updateItems();
+                        this._updateTableCount(aNewData.length);
                         MessageBox.success(oView.getModel("i18n").getResourceBundle().getText("msgDeleteSuccess"));
                     }
                 }.bind(this)
@@ -290,12 +288,10 @@ sap.ui.define([
 
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
         },
-
         onClickOrder: function (oEvent) {
             const oItem = oEvent.getSource();
             const oContext = oItem.getBindingContext("localOrders");
             const oOrder = oContext.getObject();
-
 
             this.getOwnerComponent().getRouter().navTo("RouteDetails", {
                 OrderNumber: oOrder.OrderNumber
