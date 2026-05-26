@@ -41,6 +41,8 @@ sap.ui.define([
 
         _onObjectMatched: function (oEvent) {
 
+            this.getView().setBusy(true);
+
             let sOrderNumber = oEvent.getParameter("arguments").OrderNumber;
             let oModel = this.getOwnerComponent().getModel("localOrders");
             this.getView().setModel(oModel, "localOrders");
@@ -81,6 +83,8 @@ sap.ui.define([
                     "orderProducts"
                 );
 
+                this.getView().setBusy(false); 
+
             } else {
 
                 // only load from OData first time
@@ -109,6 +113,8 @@ sap.ui.define([
                             new JSONModel(aDetails),
                             "orderProducts"
                         );
+
+                        this.getView().setBusy(false); 
 
                     }.bind(this)
                 });
