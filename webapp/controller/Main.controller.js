@@ -37,33 +37,75 @@ sap.ui.define([
         },
         onInit: function () {
             const oODataModel = this.getOwnerComponent().getModel();
+
             this._fetchNorthwindOrders(oODataModel);
+
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.getRoute("RouteMain").attachPatternMatched(this._onRouteMatched, this);
         },
-        _fetchNorthwindOrders: function (oModel) {
+        _onRouteMatched: function (routeEvent) {
+            const oView = this.getView();
+            oView.unbindElement();
+
+            const routeArgs = routeEvent.getParameter("arguments") || {};
+            const orderNumberParam = routeArgs.OrderNumber || routeArgs.orderNumber;
+
+            let localOrdersModel = this.getOwnerComponent().getModel("localOrders");
+            if (!localOrdersModel) {
+                return;
+            }
+
+            let aAllOrders = localOrdersModel.getProperty("/") || [];
+
+            if (orderNumberParam && aAllOrders.length > 0) {
+                const iIndex = aAllOrders.findIndex(order => String(order.OrderNumber) === String(orderNumberParam));
+
+                if (iIndex >= 0) {
+                    let oUpdatedItem = { ...aAllOrders[iIndex] };
+
+                    oUpdatedItem.Status = Constants.STATUS.RELEASED;
+                    aAllOrders[iIndex] = oUpdatedItem;
+                    localOrdersModel.setProperty("/", aAllOrders);
+                    localOrdersModel.refresh(true);
+
+                    const oTable = this.byId("ordersTableId");
+                    if (oTable) {
+                        oTable.updateItems();
+                    }
+                }
+            }
+        },
+        _fetchNorthwindOrders: function (oODataModel) {
             const oView = this.getView();
             const oTitle = this.byId("tableTitleId");
 
-            oModel.read("/Orders", {
-                urlParameters: {
-                    "$select": "OrderID,OrderDate,ShipName,ShipCountry",
-                    "$top": 20
-                },
+            let oLocalOrdersModel = this.getOwnerComponent().getModel("localOrders");
+            if (!oLocalOrdersModel) {
+                oLocalOrdersModel = new JSONModel([]);
+                this.getOwnerComponent().setModel(oLocalOrdersModel, "localOrders");
+            }
+
+            const aMockStatusList = [
+                Constants.STATUS.CREATED,
+                Constants.STATUS.RELEASED,
+                Constants.STATUS.PARTIAL,
+                Constants.STATUS.DELIVERED
+            ];
+
+            oODataModel.read("/Orders", {
                 success: function (oData) {
-                    const aMockStatuses = [
-                        Constants.STATUS.CREATED,
-                        Constants.STATUS.RELEASED,
-                        Constants.STATUS.PARTIAL,
-                        Constants.STATUS.DELIVERED
-                    ];
-                    const aFormattedOrders = oData.results.map(function (oOrder, idx) {
+                    const aRawItems = oData.results || [];
+
+                    const aFormattedOrders = aRawItems.map(item => {
+                        const orderIdAsNumber = Number(item.OrderID) || 0;
                         return {
-                            OrderNumber: String(oOrder.OrderID),
-                            CreationDate: oOrder.OrderDate,
+                            OrderNumber: String(item.OrderID),
+                            CreationDate: item.OrderDate,
                             ReceivingPlantCode: "9101",
-                            ReceivingPlantName: "Singapore Branch " + oOrder.ShipName,
+                            ReceivingPlantName: "Singapore Branch " + (item.ShipName || ""),
                             DeliveringPlantCode: "9102",
-                            DeliveringPlantName: "Malaysia Storage " + oOrder.ShipCountry,
-                            Status: aMockStatuses[idx % 4]
+                            DeliveringPlantName: "Malaysia Storage " + (item.ShipCountry || ""),
+                            Status: aMockStatusList[orderIdAsNumber % aMockStatusList.length]
                         };
                     });
 
@@ -71,11 +113,10 @@ sap.ui.define([
                         return parseInt(param1.OrderNumber) - parseInt(param2.OrderNumber);
                     });
 
-                    const oLocalModel = new JSONModel(aFormattedOrders);
-
-                    oView.setModel(oLocalModel, "localOrders");
+                    oLocalOrdersModel.setProperty("/", aFormattedOrders);
+                    this.getView().setModel(oLocalOrdersModel, "localOrders");
                     oTitle.setText(oView.getModel("i18n").getResourceBundle().getText("titleOrdersCount", [aFormattedOrders.length]));
-                },
+                }.bind(this),
                 error: function (oError) {
                     MessageBox.error(oView.getModel("i18n").getResourceBundle().getText("msgNorthwindConnectionFailed"));
                 }
@@ -206,7 +247,6 @@ sap.ui.define([
             oModel.refresh(true);
             this._updateTableCount();
             this._pCreateDialog.close();
-            // Success Message
             MessageToast.show(oView.getModel("i18n").getResourceBundle().getText("msgOrderCreatedSuccess", [sNum]));
             oNumControl.setValue("");
             oDateControl.setValue("");
@@ -230,22 +270,21 @@ sap.ui.define([
                 onClose: function (sAction) {
                     if (sAction === MessageBox.Action.YES) {
                         const oModel = oView.getModel("localOrders");
-                        const aData = oModel.getData();
+                        const aData = oModel.getData() || [];
 
-                        // 1. Get the actual objects to delete instead of just indexes
-                        const aItemsToDelete = aSelectedItems.map(function (oItem) {
-                            return oItem.getBindingContext("localOrders").getObject();
+                        const aOrderNumbersToDelete = aSelectedItems.map(function (oItem) {
+                            return String(oItem.getBindingContext("localOrders").getProperty("OrderNumber"));
                         });
 
-                        // 2. Filter the data array to remove those objects
                         const aNewData = aData.filter(function (oDataObj) {
-                            return !aItemsToDelete.includes(oDataObj);
+                            return !aOrderNumbersToDelete.includes(String(oDataObj.OrderNumber));
                         });
 
-                        // 3. Update model and UI
                         oModel.setData(aNewData);
+                        oModel.refresh(true);
                         oTable.removeSelections(true);
-                        this._updateTableCount();
+                        oTable.updateItems();
+                        this._updateTableCount(aNewData.length);
                         MessageBox.success(oView.getModel("i18n").getResourceBundle().getText("msgDeleteSuccess"));
                     }
                 }.bind(this)
@@ -257,12 +296,10 @@ sap.ui.define([
 
             this.byId("tableTitleId").setText("Orders (" + iLength + ")");
         },
-
         onClickOrder: function (oEvent) {
             const oItem = oEvent.getSource();
             const oContext = oItem.getBindingContext("localOrders");
             const oOrder = oContext.getObject();
-
 
             this.getOwnerComponent().getRouter().navTo("RouteDetails", {
                 OrderNumber: oOrder.OrderNumber
