@@ -1,1 +1,21 @@
 /* Enter your custom styles here */
+
+.myTableWrapper {
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.myRoundedTable {
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+/* remove default table border */
+.myRoundedTable .sapMListTbl {
+    border: none;
+}
+
+/* fix bottom edge (THIS is the key) */
+.myRoundedTable .sapMListUl {
+    border-bottom: none;
+}

@@ -1,71 +1,173 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:fd="sap.f" controllerName="sapui5.group3.casestudy.controller.Edit" height="100%">
-
-    <fd:DynamicPage id="dynamicPageIdEdit" showFooter="true">
-
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:fd="sap.f"
+    controllerName="sapui5.group3.casestudy.controller.Edit"
+    height="100%"
+>
+    <fd:DynamicPage
+        id="dynamicPageIdEdit"
+        showFooter="true"
+    >
         <fd:title>
             <fd:DynamicPageTitle>
                 <fd:heading>
-                    <Title text="{i18n>editOrder}" level="H1" titleStyle="H1"/>
+                    <Title
+                        text="{i18n>editOrder}"
+                        level="H1"
+                        titleStyle="H1"
+                    />
                 </fd:heading>
             </fd:DynamicPageTitle>
         </fd:title>
 
         <fd:content>
-
-          <VBox>
-
-                <f:SimpleForm id="idSimpleForm" editable="true" layout="ResponsiveGridLayout" title="{i18n>editOrder}" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" width="auto" class="sapUiResponsiveMargin">
-
+            <VBox>
+                <f:SimpleForm
+                    id="idSimpleForm"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    title="{i18n>editOrder}"
+                    labelSpanXL="3"
+                    labelSpanL="3"
+                    labelSpanM="3"
+                    labelSpanS="12"
+                    adjustLabelSpan="false"
+                    emptySpanXL="4"
+                    emptySpanL="4"
+                    emptySpanM="4"
+                    emptySpanS="0"
+                    columnsXL="1"
+                    columnsL="1"
+                    columnsM="1"
+                    width="auto"
+                    class="sapUiResponsiveMargin"
+                >
                     <f:content>
-                        <Label text="{i18n>lblOrderNumber}"/>
-                        <Input xmlns="sap.m" value="{localOrders>OrderNumber}" id="orderNumberInput" editable="false"/>
+                        <Label text="{i18n>lblOrderNumber}" />
+                        <Input
+                            xmlns="sap.m"
+                            value="{localOrders>OrderNumber}"
+                            id="orderNumberInput"
+                            editable="false"
+                        />
 
-                        <Label text="{i18n>lblCreationDate}"/>
-                        <Input xmlns="sap.m" value="{localOrders>CreationDate}" id="createdOnInput" editable="false"/>
+                        <Label text="{i18n>lblCreationDate}" />
+                        <Input
+                            xmlns="sap.m"
+                            value="{localOrders>CreationDate}"
+                            id="createdOnInput"
+                            editable="false"
+                        />
 
-                        <Label text="{i18n>colReceivingPlant}"/>
-                        <Input xmlns="sap.m" value="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}" id="receivingPlantInput" editable="false"/>
+                        <Label text="{i18n>colReceivingPlant}" />
+                        <Input
+                            xmlns="sap.m"
+                            value="{localOrders>ReceivingPlantCode} - {localOrders>ReceivingPlantName}"
+                            id="receivingPlantInput"
+                            editable="false"
+                        />
 
-                        <Label text="{i18n>colDeliveringPlant}"/>
-                        <Input xmlns="sap.m" value="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}" id="deliveringPlantInput" editable="false"/>
+                        <Label text="{i18n>colDeliveringPlant}" />
+                        <Input
+                            xmlns="sap.m"
+                            value="{localOrders>DeliveringPlantCode} - {localOrders>DeliveringPlantName}"
+                            id="deliveringPlantInput"
+                            editable="false"
+                        />
 
-                        <Label text="{i18n>colStatus}"/>
-                        <Select xmlns="sap.m" id="select0" enabled="true" editable="true" selectedKey="{localOrders>Status}">
+                        <Label text="{i18n>colStatus}" />
+                        <Select
+                            xmlns="sap.m"
+                            id="select0"
+                            enabled="true"
+                            editable="true"
+                            selectedKey="{localOrders>Status}"
+                        >
                             <items>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/CREATED}" text="{i18n>statusCreated}" id="item3"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/RELEASED}" text="{i18n>statusReleased}" id="item4"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/PARTIAL}" text="{i18n>statusPartiallyCompleted}" id="item5"/>
-                                <core:Item xmlns:core="sap.ui.core" key="{Constants>/STATUS/DELIVERED}" text="{i18n>statusDelivered}" id="item6"/>
+                                <core:Item
+                                    xmlns:core="sap.ui.core"
+                                    key="{Constants>/STATUS/CREATED}"
+                                    text="{i18n>statusCreated}"
+                                    id="item3"
+                                />
+                                <core:Item
+                                    xmlns:core="sap.ui.core"
+                                    key="{Constants>/STATUS/RELEASED}"
+                                    text="{i18n>statusReleased}"
+                                    id="item4"
+                                />
+                                <core:Item
+                                    xmlns:core="sap.ui.core"
+                                    key="{Constants>/STATUS/PARTIAL}"
+                                    text="{i18n>statusPartiallyCompleted}"
+                                    id="item5"
+                                />
+                                <core:Item
+                                    xmlns:core="sap.ui.core"
+                                    key="{Constants>/STATUS/DELIVERED}"
+                                    text="{i18n>statusDelivered}"
+                                    id="item6"
+                                />
                             </items>
                         </Select>
-                        
                     </f:content>
-
                 </f:SimpleForm>
 
-                <Table id="idProductsTable" mode="MultiSelect" items="{orderProducts>/}" width="auto" class="sapUiResponsiveMargin sapUiLargePaddingTop">
-
+                <!-- Products Table -->
+                <Table
+                    id="idProductsTable"
+                    mode="MultiSelect"
+                    items="{orderProducts>/}"
+                    width="auto"
+                    class="sapUiResponsiveMargin sapUiLargePaddingTop myRoundedTable"
+                    sticky="ColumnHeaders,HeaderToolbar"
+                >
                     <headerToolbar>
                         <Toolbar>
-                            <Title text="{ parts: ['orderProducts>/','i18n>products'], formatter: '.formatter.getProductTitle'}" />
-                            <ToolbarSpacer/>
-                            <Button id="addItemButton" icon="sap-icon://add" press="onAddItem" />
-                            <Button id="deleteItemButton" icon="sap-icon://delete" press="onDeleteItem" />
+                            <Title
+                                text="{ parts: ['orderProducts>/','i18n>products'], formatter: '.formatter.getProductTitle'}"
+                            />
+                            <ToolbarSpacer />
+                            <Button
+                                id="addItemButton"
+                                icon="sap-icon://add"
+                                press="onAddItem"
+                            />
+                            <Button
+                                id="deleteItemButton"
+                                icon="sap-icon://delete"
+                                press="onDeleteItem"
+                            />
                         </Toolbar>
                     </headerToolbar>
 
                     <columns>
-                        <Column width="25%" demandPopin="true">
-                            <Text text="{i18n>colProductName}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colProductName}" />
                         </Column>
-                        <Column width="25%" demandPopin="true">
-                            <Text text="{i18n>colQuantity}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colQuantity}" />
                         </Column>
-                        <Column width="25%" demandPopin="true">
-                            <Text text="{i18n>colPriceperQuantity}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colPriceperQuantity}" />
                         </Column>
-                        <Column width="25%" demandPopin="true">
-                            <Text text="{i18n>colTotalPrice}"/>
+                        <Column
+                            width="25%"
+                            demandPopin="true"
+                        >
+                            <Text text="{i18n>colTotalPrice}" />
                         </Column>
                     </columns>
 
@@ -73,36 +175,51 @@
                         <ColumnListItem>
                             <cells>
                                 <VBox>
-                                    <Text text="{orderProducts>ProductID} - {orderProducts>Product/ProductName}" />
+                                    <Text
+                                        text="{orderProducts>ProductID} - {orderProducts>Product/ProductName}"
+                                    />
                                 </VBox>
 
                                 <VBox>
-                                    <Text text="{orderProducts>Quantity}"/>
+                                    <Text text="{orderProducts>Quantity}" />
                                 </VBox>
 
                                 <VBox>
-                                    <Text text="{orderProducts>UnitPrice}"/>
+                                    <Text text="{ path: 'orderProducts>UnitPrice', formatter: '.formatter.to2' }" />
                                 </VBox>
 
-                                <Text text="{= ${orderProducts>Quantity} * ${orderProducts>UnitPrice} }" />
+                                <Text
+                                    text="{
+                                        parts: [
+                                        { path: 'orderProducts>Quantity' },
+                                        { path: 'orderProducts>UnitPrice' }
+                                        ],
+                                        formatter: '.formatter.calcTotal'
+                                    }"
+                                />
                             </cells>
                         </ColumnListItem>
                     </items>
-
                 </Table>
-
-           </VBox>
-
+            </VBox>
         </fd:content>
 
         <fd:footer>
             <OverflowToolbar>
-                <ToolbarSpacer/>
-                <Button id="saveButton" text="{i18n>btnSave}" type="Emphasized" press="onPressSave"/>
-                <Button id="cancelButton" text="{i18n>btnCancel}" type="Reject" press="onPressCancel"/>
+                <ToolbarSpacer />
+                <Button
+                    id="saveButton"
+                    text="{i18n>btnSave}"
+                    type="Emphasized"
+                    press="onPressSave"
+                />
+                <Button
+                    id="cancelButton"
+                    text="{i18n>btnCancel}"
+                    type="Reject"
+                    press="onPressCancel"
+                />
             </OverflowToolbar>
         </fd:footer>
-
     </fd:DynamicPage>
-
 </mvc:View>
