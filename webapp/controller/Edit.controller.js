@@ -44,16 +44,23 @@ sap.ui.define([
             this.getView().setBusy(true);
 
             let sOrderNumber = oEvent.getParameter("arguments").OrderNumber;
+
             let oModel = this.getOwnerComponent().getModel("localOrders");
-            this.getView().setModel(oModel, "localOrders");
 
             //attach model to view
             this.getView().setModel(oModel, "localOrders");
 
             let aOrders = oModel.getProperty("/");
-            let iIndex = aOrders.findIndex(o =>
-                String(o.OrderNumber) === String(sOrderNumber)
-            );
+
+            //find index of order from localOrders based on OrderNumber from route parameter
+            let iIndex = -1;
+
+            for (let i = 0; i < aOrders.length; i++) {
+                if (aOrders[i].OrderNumber == sOrderNumber) {
+                    iIndex = i;
+                    break;
+                }
+            }
 
             this._iOrderIndex = iIndex;
 
@@ -72,18 +79,16 @@ sap.ui.define([
 
             // metadata: Order>Order Details>Product (to get Product Name in one call)
             // first check if there are already local changes (products added/deleted) to show in edit page, if not load from OData
-            let bEdited = oModel.getProperty("/" + iIndex + "/_edited");
             let aExisting = oModel.getProperty("/" + iIndex + "/Order_Details");
 
-            if (bEdited === true) {
+            if (aExisting !== undefined && aExisting !== null) {
 
-                // Use saved data
                 this.getView().setModel(
                     new JSONModel(aExisting),
                     "orderProducts"
                 );
 
-                this.getView().setBusy(false); 
+                this.getView().setBusy(false);
 
             } else {
 
@@ -114,7 +119,7 @@ sap.ui.define([
                             "orderProducts"
                         );
 
-                        this.getView().setBusy(false); 
+                        this.getView().setBusy(false);
 
                     }.bind(this)
                 });
@@ -352,10 +357,6 @@ sap.ui.define([
 
                             //update products in local model
                             oLocal.setProperty("/" + iIndex + "/Order_Details", aProducts);
-
-                            //set edited flag to true to identify changes in detail page 
-                            // (since we are not persisting, this is needed to trigger the update in details page)
-                            oLocal.setProperty("/" + iIndex + "/_edited", true);
 
                             //show success MessageBox
                             MessageBox.success(
