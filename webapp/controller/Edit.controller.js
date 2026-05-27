@@ -26,7 +26,24 @@ sap.ui.define([
 
                 return "Products (" + iCount + ")";
 
-            }
+            },
+
+            to2: function (value) {
+                const cleaned = String(value ?? 0)
+                    .replace(/,/g, "")
+                    .replace(/[^\d.-]/g, "");
+
+                const parsed = parseFloat(cleaned);
+                return (isNaN(parsed) ? 0 : parsed).toFixed(2);
+            },
+
+            calcTotal: function (quantity, unitPrice) {
+                const total = (Number(quantity) || 0) * (Number(unitPrice) || 0);
+                return new Intl.NumberFormat("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(total);
+            },
 
         },
 
