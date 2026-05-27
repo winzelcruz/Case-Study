@@ -54,129 +54,139 @@ sap.ui.define([
             }
         },
 
-        // Route handler: bind selected order header + load product details (prefer cached local data; fallback to OData $expand).
+
+        // Route handler: loads selected order, binds header from localOrders, and sets orderProducts from cache or OData
         _onRouteMatched: function (routeEvent) {
-            // Get OrderNumber from route params (supports different casing).
             const routeArgs = routeEvent.getParameter("arguments") || {};
             const orderNumberParam = routeArgs.OrderNumber || routeArgs.orderNumber;
 
             const view = this.getView();
             const odataModel = view.getModel(); // default ODataModel
 
-            // Guard: ensure products table has a valid model even if ODataModel is missing.
+            // Ensure table has a model even if ODataModel is missing
             if (!odataModel) {
                 view.setModel(new JSONModel([]), "orderProducts");
                 return;
             }
 
-            // Use component-level localOrders when possible (fallback to core model if app uses global storage).
+            // Retrieve shared localOrders model (component preferred)
             let localOrdersModel =
                 this.getOwnerComponent().getModel("localOrders") ||
                 sap.ui.getCore().getModel("localOrders");
 
-            // Find matching order in localOrders so header fields can bind to the correct context.
             let localOrderIndex = -1;
+
             if (localOrdersModel && typeof localOrdersModel.getProperty === "function") {
                 view.setModel(localOrdersModel, "localOrders");
-                this.getOwnerComponent().setModel(localOrdersModel, "localOrders"); // keep shared across pages (e.g., Edit)
+
+                // Keep model in component for cross-page access (e.g., Edit page)
+                this.getOwnerComponent().setModel(localOrdersModel, "localOrders");
 
                 const localOrders = localOrdersModel.getProperty("/") || [];
+
+                // Find the selected order in local model
                 localOrderIndex = localOrders.findIndex(order =>
                     String(order.OrderNumber) === String(orderNumberParam)
                 );
 
-                // Bind header section to the found local order entry.
+                // Bind header context if found
                 if (localOrderIndex >= 0) {
                     view.bindElement({ path: "localOrders>/" + localOrderIndex });
                 }
             }
 
-            // Build OData key path for numeric vs string keys.
+            // Build correct OData path for numeric/string keys
             const orderEntityPath = !isNaN(orderNumberParam)
                 ? "/Orders(" + orderNumberParam + ")"
                 : "/Orders('" + encodeURIComponent(orderNumberParam) + "')";
 
-            // Prefer persisted Order_Details from localOrders to preserve data across navigation/refresh.
+            // Check if Order_Details already exists locally (persistence)
             let aExistingDetails = null;
+
             if (localOrdersModel && localOrderIndex >= 0) {
                 aExistingDetails = localOrdersModel.getProperty("/" + localOrderIndex + "/Order_Details");
             }
 
-            // If cached details exist, use them instead of calling OData.
+            // Use cached details instead of calling backend
             if (aExistingDetails !== undefined && aExistingDetails !== null) {
-                // Normalize cached structure for table bindings (flatten ProductName).
+
+                // Normalize ProductName from nested structure
                 aExistingDetails.forEach(function (item) {
                     if (item.Product && item.Product.ProductName) {
                         item.ProductName = item.Product.ProductName;
                     }
                 });
 
-                view.setModel(new JSONModel(aExistingDetails), "orderProducts");
-                return;
+                view.setModel(
+                    new JSONModel(aExistingDetails),
+                    "orderProducts"
+                );
+
+            } else {
+
+                // Read order with expanded details and product data
+                odataModel.read(orderEntityPath, {
+                    urlParameters: { "$expand": "Order_Details/Product" },
+
+                    success: function (orderEntityData) {
+
+                        // Fallback: create local order if none exists (e.g., refresh/direct access)
+                        if (!localOrdersModel || localOrderIndex < 0) {
+                            const mockStatusList = [
+                                Constants.STATUS.CREATED,
+                                Constants.STATUS.RELEASED,
+                                Constants.STATUS.PARTIAL,
+                                Constants.STATUS.DELIVERED
+                            ];
+
+                            const orderIdAsNumber = Number(orderEntityData.OrderID) || 0;
+
+                            const formattedOrder = {
+                                OrderNumber: String(orderEntityData.OrderID),
+                                CreationDate: orderEntityData.OrderDate,
+
+                                ReceivingPlantCode: "9101",
+                                ReceivingPlantName: "Singapore Branch " + (orderEntityData.ShipName || ""),
+
+                                DeliveringPlantCode: "9102",
+                                DeliveringPlantName: "Malaysia Storage " + (orderEntityData.ShipCountry || ""),
+
+                                Status: mockStatusList[orderIdAsNumber % mockStatusList.length]
+                            };
+
+                            localOrdersModel = new JSONModel([formattedOrder]);
+                            view.setModel(localOrdersModel, "localOrders");
+                            view.bindElement({ path: "localOrders>/0" });
+                        }
+
+                        // Extract and normalize Order_Details for table binding
+                        const orderDetails = (orderEntityData.Order_Details && orderEntityData.Order_Details.results)
+                            ? orderEntityData.Order_Details.results
+                            : [];
+
+                        orderDetails.forEach(detailItem => {
+                            detailItem.ProductID = detailItem.ProductID != null
+                                ? detailItem.ProductID
+                                : (detailItem.Product ? detailItem.Product.ProductID : null);
+
+                            detailItem.ProductIDText = detailItem.ProductID != null ? String(detailItem.ProductID) : "";
+
+                            detailItem.ProductName = detailItem.Product
+                                ? detailItem.Product.ProductName
+                                : (detailItem.ProductName || "");
+
+                            detailItem.UnitPrice = detailItem.UnitPrice != null
+                                ? detailItem.UnitPrice
+                                : (detailItem.Product ? detailItem.Product.UnitPrice : 0);
+
+                            detailItem.Quantity = detailItem.Quantity || 0;
+                            detailItem.isNew = false;
+                        });
+
+                        view.setModel(new JSONModel(orderDetails), "orderProducts");
+                    }.bind(this)
+                });
             }
-
-            // Otherwise, fetch order + details + products in one call using $expand.
-            odataModel.read(orderEntityPath, {
-                urlParameters: { "$expand": "Order_Details/Product" },
-
-                success: function (orderEntityData) {
-                    // Fallback: if local header entry is missing (deep link/refresh), create a minimal localOrders item for bindings.
-                    if (!localOrdersModel || localOrderIndex < 0) {
-                        const mockStatusList = [
-                            Constants.STATUS.CREATED,
-                            Constants.STATUS.RELEASED,
-                            Constants.STATUS.PARTIAL,
-                            Constants.STATUS.DELIVERED
-                        ];
-
-                        const orderIdAsNumber = Number(orderEntityData.OrderID) || 0;
-
-                        const formattedOrder = {
-                            OrderNumber: String(orderEntityData.OrderID),
-                            CreationDate: orderEntityData.OrderDate,
-
-                            ReceivingPlantCode: "9101",
-                            ReceivingPlantName: "Singapore Branch " + (orderEntityData.ShipName || ""),
-
-                            DeliveringPlantCode: "9102",
-                            DeliveringPlantName: "Malaysia Storage " + (orderEntityData.ShipCountry || ""),
-
-                            Status: mockStatusList[orderIdAsNumber % mockStatusList.length]
-                        };
-
-                        localOrdersModel = new JSONModel([formattedOrder]);
-                        view.setModel(localOrdersModel, "localOrders");
-                        view.bindElement({ path: "localOrders>/0" });
-                    }
-
-                    // Extract expanded line items and normalize fields for consistent UI bindings.
-                    const orderDetails = (orderEntityData.Order_Details && orderEntityData.Order_Details.results)
-                        ? orderEntityData.Order_Details.results
-                        : [];
-
-                    orderDetails.forEach(detailItem => {
-                        // Flatten/standardize Product fields even if some values are missing in the payload.
-                        detailItem.ProductID = detailItem.ProductID != null
-                            ? detailItem.ProductID
-                            : (detailItem.Product ? detailItem.Product.ProductID : null);
-
-                        detailItem.ProductIDText = detailItem.ProductID != null ? String(detailItem.ProductID) : "";
-
-                        detailItem.ProductName = detailItem.Product
-                            ? detailItem.Product.ProductName
-                            : (detailItem.ProductName || "");
-
-                        detailItem.UnitPrice = detailItem.UnitPrice != null
-                            ? detailItem.UnitPrice
-                            : (detailItem.Product ? detailItem.Product.UnitPrice : 0);
-
-                        detailItem.Quantity = detailItem.Quantity || 0;
-                        detailItem.isNew = false;
-                    });
-
-                    view.setModel(new JSONModel(orderDetails), "orderProducts");
-                }.bind(this)
-            });
         },
 
         //returns the user to the Main route without saving any additional changes.
