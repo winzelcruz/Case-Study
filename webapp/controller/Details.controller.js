@@ -79,7 +79,7 @@ sap.ui.define([
             if (localOrdersModel && typeof localOrdersModel.getProperty === "function") {
                 view.setModel(localOrdersModel, "localOrders");
 
-                // Keep model in component for cross-page access (e.g., Edit page)
+                //anne.marie.c.mendoza bind to component-level model to access in edit page
                 this.getOwnerComponent().setModel(localOrdersModel, "localOrders");
 
                 const localOrders = localOrdersModel.getProperty("/") || [];
@@ -100,7 +100,8 @@ sap.ui.define([
                 ? "/Orders(" + orderNumberParam + ")"
                 : "/Orders('" + encodeURIComponent(orderNumberParam) + "')";
 
-            // Check if Order_Details already exists locally (persistence)
+            //anne.marie.c.mendoza add code to check if data persists
+            // check if already saved locally
             let aExistingDetails = null;
 
             if (localOrdersModel && localOrderIndex >= 0) {
@@ -110,7 +111,7 @@ sap.ui.define([
             // Use cached details instead of calling backend
             if (aExistingDetails !== undefined && aExistingDetails !== null) {
 
-                // Normalize ProductName from nested structure
+                // map ProductName from saved structure
                 aExistingDetails.forEach(function (item) {
                     if (item.Product && item.Product.ProductName) {
                         item.ProductName = item.Product.ProductName;
@@ -194,7 +195,7 @@ sap.ui.define([
             this.getOwnerComponent().getRouter().navTo("RouteMain");
         },
 
-        //syncs localOrders to the component model and navigates to the Edit route for the currently bound order.
+        //anne.marie.c.mendoza add code to navigate to edit page
         onEdit: function () {
             let oRouter = this.getOwnerComponent().getRouter();
 
