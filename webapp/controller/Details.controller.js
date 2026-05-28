@@ -7,6 +7,7 @@ sap.ui.define([
 
     return Controller.extend("sapui5.group3.casestudy.controller.Details", {
 
+        //runs once when the controller is created, attaches route match handler for Details navigation.
         onInit: function () {
             this.getOwnerComponent()
                 .getRouter()
@@ -15,6 +16,7 @@ sap.ui.define([
         },
 
         formatter: {
+            //calculates quantity * unit price and returns a localized string with exactly 2 decimal places.
             calcTotal: function (quantity, unitPrice) {
                 const total = (Number(quantity) || 0) * (Number(unitPrice) || 0);
                 return new Intl.NumberFormat("en-US", {
@@ -23,21 +25,25 @@ sap.ui.define([
                 }).format(total);
             },
 
+            //returns "PlantCode - PlantName" safely even when one or both values are null/undefined.
             plantFormat: function (plantCode, plantName) {
                 return (plantCode != null ? String(plantCode) : "") + " - " +
                     (plantName != null ? String(plantName) : "");
             },
 
+            //returns "ProductId - ProductName" safely even when one or both values are null/undefined.
             productFormat: function (productId, productName) {
                 return (productId != null ? String(productId) : "") + " - " +
                     (productName != null ? String(productName) : "");
             },
 
+            //returns a label like "Product (N)" where N is the length of the products array (or 0 if not an array).
             formatProductCount: function (products) {
                 const count = Array.isArray(products) ? products.length : 0;
                 return "Product (" + count + ")";
             },
 
+            //cleans a potentially formatted currency/number string and returns a numeric string with exactly 2 decimals.
             to2: function (value) {
                 const cleaned = String(value ?? 0)
                     .replace(/,/g, "")
@@ -48,6 +54,8 @@ sap.ui.define([
             }
         },
 
+
+        // Route handler: loads selected order, binds header from localOrders, and sets orderProducts from cache or OData
         _onRouteMatched: function (routeEvent) {
             const routeArgs = routeEvent.getParameter("arguments") || {};
             const orderNumberParam = routeArgs.OrderNumber || routeArgs.orderNumber;
@@ -55,11 +63,13 @@ sap.ui.define([
             const view = this.getView();
             const odataModel = view.getModel(); // default ODataModel
 
+            // Ensure table has a model even if ODataModel is missing
             if (!odataModel) {
                 view.setModel(new JSONModel([]), "orderProducts");
                 return;
             }
 
+            // Retrieve shared localOrders model (component preferred)
             let localOrdersModel =
                 this.getOwnerComponent().getModel("localOrders") ||
                 sap.ui.getCore().getModel("localOrders");
@@ -71,17 +81,21 @@ sap.ui.define([
 
                 //anne.marie.c.mendoza bind to component-level model to access in edit page
                 this.getOwnerComponent().setModel(localOrdersModel, "localOrders");
-                
+
                 const localOrders = localOrdersModel.getProperty("/") || [];
+
+                // Find the selected order in local model
                 localOrderIndex = localOrders.findIndex(order =>
                     String(order.OrderNumber) === String(orderNumberParam)
                 );
 
+                // Bind header context if found
                 if (localOrderIndex >= 0) {
                     view.bindElement({ path: "localOrders>/" + localOrderIndex });
                 }
             }
 
+            // Build correct OData path for numeric/string keys
             const orderEntityPath = !isNaN(orderNumberParam)
                 ? "/Orders(" + orderNumberParam + ")"
                 : "/Orders('" + encodeURIComponent(orderNumberParam) + "')";
@@ -94,6 +108,7 @@ sap.ui.define([
                 aExistingDetails = localOrdersModel.getProperty("/" + localOrderIndex + "/Order_Details");
             }
 
+            // Use cached details instead of calling backend
             if (aExistingDetails !== undefined && aExistingDetails !== null) {
 
                 // map ProductName from saved structure
@@ -110,12 +125,13 @@ sap.ui.define([
 
             } else {
 
+                // Read order with expanded details and product data
                 odataModel.read(orderEntityPath, {
                     urlParameters: { "$expand": "Order_Details/Product" },
 
                     success: function (orderEntityData) {
 
-                        // If local order does not exist, build a fallback local model entry
+                        // Fallback: create local order if none exists (e.g., refresh/direct access)
                         if (!localOrdersModel || localOrderIndex < 0) {
                             const mockStatusList = [
                                 Constants.STATUS.CREATED,
@@ -144,6 +160,7 @@ sap.ui.define([
                             view.bindElement({ path: "localOrders>/0" });
                         }
 
+                        // Extract and normalize Order_Details for table binding
                         const orderDetails = (orderEntityData.Order_Details && orderEntityData.Order_Details.results)
                             ? orderEntityData.Order_Details.results
                             : [];
@@ -171,9 +188,9 @@ sap.ui.define([
                     }.bind(this)
                 });
             }
-
         },
 
+        //returns the user to the Main route without saving any additional changes.
         onCancel: function () {
             this.getOwnerComponent().getRouter().navTo("RouteMain");
         },
@@ -196,6 +213,7 @@ sap.ui.define([
             });
         },
 
+        //wraps ODataModel.read in a Promise so you can use async/await for reads.
         _readAsync: function (model, path, parameters) {
             return new Promise((resolve, reject) => {
                 model.read(path, Object.assign({}, parameters, {
@@ -205,6 +223,7 @@ sap.ui.define([
             });
         },
 
+        //builds the correct OData entity key path for Orders depending on whether the key is numeric or string.
         _buildOrderPath: function (orderNumber) {
             return !isNaN(orderNumber)
                 ? "/Orders(" + orderNumber + ")"
